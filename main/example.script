@@ -3,6 +3,8 @@ local function applovin_callback(self, message_id, message)
 end
 
 function init(self)
-	applovin.initialize()
-	applovin.set_callback(applovin_callback)
+	if applovin then
+		applovin.set_callback(applovin_callback)
+		applovin.initialize()
+	end
 end

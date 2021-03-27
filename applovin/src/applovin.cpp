@@ -5,7 +5,7 @@
 #define DLIB_LOG_DOMAIN LIB_NAME
 #include <dmsdk/sdk.h>
 
-#if true //defined(DM_PLATFORM_ANDROID) || defined(DM_PLATFORM_IOS)
+#if defined(DM_PLATFORM_ANDROID) //|| defined(DM_PLATFORM_IOS)
 
 #include "applovin_private.h"
 #include "applovin_callback_private.h"
@@ -23,7 +23,6 @@ static int Lua_SetCallback(lua_State* L)
 {
     DM_LUA_STACK_CHECK(L, 0);
     SetLuaCallback(L, 1);
-    dmAppLovinMax::AddToQueueCallback(MSG_EXAMPLE, "{ \"event\":1, \"debug\":true, \"hello\":\"world\" }"); // UNDONE Debug
     return 0;
 }
 
