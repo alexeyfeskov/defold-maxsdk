@@ -7,6 +7,7 @@
 
 #if defined(DM_PLATFORM_ANDROID) //|| defined(DM_PLATFORM_IOS)
 
+#include "utils/LuaUtils.h"
 #include "applovin_private.h"
 #include "applovin_callback_private.h"
 
@@ -23,6 +24,76 @@ static int Lua_SetCallback(lua_State* L)
 {
     DM_LUA_STACK_CHECK(L, 0);
     SetLuaCallback(L, 1);
+    return 0;
+}
+
+static int Lua_SetMuted(lua_State* L)
+{
+    DM_LUA_STACK_CHECK(L, 0);
+    if (lua_type(L, 1) != LUA_TBOOLEAN) {
+        char msg[256];
+        snprintf(msg, sizeof(msg), "Expected boolean, got %s. Wrong type for SetMuted '%s'.", luaL_typename(L, 1), lua_tostring(L, 1));
+        luaL_error(L, msg);
+        return 0;
+    }
+    bool muted_lua = luaL_checkbool(L, 1);
+    SetMuted(muted_lua);
+    return 0;
+}
+
+static int Lua_SetVerboseLogging(lua_State* L)
+{
+    DM_LUA_STACK_CHECK(L, 0);
+    if (lua_type(L, 1) != LUA_TBOOLEAN) {
+        char msg[256];
+        snprintf(msg, sizeof(msg), "Expected boolean, got %s. Wrong type for SetVerboseLogging '%s'.", luaL_typename(L, 1), lua_tostring(L, 1));
+        luaL_error(L, msg);
+        return 0;
+    }
+    bool verbose_lua = luaL_checkbool(L, 1);
+    SetVerboseLogging(verbose_lua);
+    return 0;
+}
+
+static int Lua_SetHasUserConsent(lua_State* L)
+{
+    DM_LUA_STACK_CHECK(L, 0);
+    if (lua_type(L, 1) != LUA_TBOOLEAN) {
+        char msg[256];
+        snprintf(msg, sizeof(msg), "Expected boolean, got %s. Wrong type for SetHasUserConsent '%s'.", luaL_typename(L, 1), lua_tostring(L, 1));
+        luaL_error(L, msg);
+        return 0;
+    }
+    bool hasConsent_lua = luaL_checkbool(L, 1);
+    SetHasUserConsent(hasConsent_lua);
+    return 0;
+}
+
+static int Lua_SetIsAgeRestrictedUser(lua_State* L)
+{
+    DM_LUA_STACK_CHECK(L, 0);
+    if (lua_type(L, 1) != LUA_TBOOLEAN) {
+        char msg[256];
+        snprintf(msg, sizeof(msg), "Expected boolean, got %s. Wrong type for SetIsAgeRestrictedUser '%s'.", luaL_typename(L, 1), lua_tostring(L, 1));
+        luaL_error(L, msg);
+        return 0;
+    }
+    bool ageRestricted_lua = luaL_checkbool(L, 1);
+    SetIsAgeRestrictedUser(ageRestricted_lua);
+    return 0;
+}
+
+static int Lua_SetDoNotSell(lua_State* L)
+{
+    DM_LUA_STACK_CHECK(L, 0);
+    if (lua_type(L, 1) != LUA_TBOOLEAN) {
+        char msg[256];
+        snprintf(msg, sizeof(msg), "Expected boolean, got %s. Wrong type for SetDoNotSell '%s'.", luaL_typename(L, 1), lua_tostring(L, 1));
+        luaL_error(L, msg);
+        return 0;
+    }
+    bool doNotSell_lua = luaL_checkbool(L, 1);
+    SetDoNotSell(doNotSell_lua);
     return 0;
 }
 
@@ -51,6 +122,11 @@ static const luaL_reg Module_methods[] =
 {
     {"initialize", Lua_Initialize},
     {"set_callback", Lua_SetCallback},
+    {"set_muted", Lua_SetMuted},
+    {"set_verbose_logging", Lua_SetVerboseLogging},
+    {"set_has_user_consent", Lua_SetHasUserConsent},
+    {"set_is_age_restricted_user", Lua_SetIsAgeRestrictedUser},
+    {"set_do_not_sell", Lua_SetDoNotSell},
     {"load_interstitial", Lua_LoadInterstitial},
     {"show_interstitial", Lua_ShowInterstitial},
     {0, 0}

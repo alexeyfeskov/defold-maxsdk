@@ -19,12 +19,12 @@ local function applovin_callback(self, message_id, message)
 		elseif message.event == applovin.EVENT_CLICKED then
 			print("EVENT_CLICKED: Interstitial AD clicked")
 		elseif message.event == applovin.EVENT_FAILED_TO_SHOW then
-			print("EVENT_FAILED_TO_SHOW: Interstitial AD failed to show\nCode: "..message.code.."\nError: "..message.error)
+			print("EVENT_FAILED_TO_SHOW: Interstitial AD failed to show\nCode: "..message.code)
 			load_interstitial(self)
 		elseif message.event == applovin.EVENT_OPENING then
 			print("EVENT_OPENING: Interstitial AD is opening")
 		elseif message.event == applovin.EVENT_FAILED_TO_LOAD then
-			print("EVENT_FAILED_TO_LOAD: Interstitial AD failed to load\nCode: "..message.code.."\nError: "..message.error)
+			print("EVENT_FAILED_TO_LOAD: Interstitial AD failed to load\nCode: "..message.code)
 			load_interstitial(self)
 		elseif message.event == applovin.EVENT_LOADED then
 			print("EVENT_LOADED: Interstitial AD loaded")
@@ -38,6 +38,11 @@ end
 function init(self)
 	if applovin then
 		applovin.set_callback(applovin_callback)
+		applovin.set_muted(false)
+		applovin.set_verbose_logging(true)
+		applovin.set_has_user_consent(true)
+		applovin.set_is_age_restricted_user(false)
+		applovin.set_do_not_sell(false)
 		applovin.initialize()
 	end
 end

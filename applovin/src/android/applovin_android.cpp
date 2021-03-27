@@ -23,6 +23,11 @@ struct AppLovin
     jmethodID      m_Initialize;
     jmethodID      m_LoadInterstitial;
     jmethodID      m_ShowInterstitial;
+    jmethodID      m_SetMuted;
+    jmethodID      m_SetVerboseLogging;
+    jmethodID      m_SetHasUserConsent;
+    jmethodID      m_SetIsAgeRestrictedUser;
+    jmethodID      m_SetDoNotSell;
 };
 
 static AppLovin       g_applovin;
@@ -42,6 +47,14 @@ static bool CallBoolMethod(jobject instance, jmethodID method)
 
     jboolean return_value = (jboolean)env->CallBooleanMethod(instance, method);
     return JNI_TRUE == return_value;
+}
+
+static void CallVoidMethodBool(jobject instance, jmethodID method, bool cbool)
+{
+    ThreadAttacher attacher;
+    JNIEnv *env = attacher.env;
+
+    env->CallVoidMethod(instance, method, cbool);
 }
 
 static void CallVoidMethodChar(jobject instance, jmethodID method, const char* cstr)
@@ -75,6 +88,11 @@ static void CallVoidMethodInt(jobject instance, jmethodID method, int cint)
 static void InitJNIMethods(JNIEnv* env, jclass cls)
 {
     g_applovin.m_Initialize = env->GetMethodID(cls, "initialize", "()V");
+    g_applovin.m_SetMuted               = env->GetMethodID(cls, "setMuted", "(Z)V");
+    g_applovin.m_SetVerboseLogging      = env->GetMethodID(cls, "setVerboseLogging", "(Z)V");
+    g_applovin.m_SetHasUserConsent      = env->GetMethodID(cls, "setHasUserConsent", "(Z)V");
+    g_applovin.m_SetIsAgeRestrictedUser = env->GetMethodID(cls, "setIsAgeRestrictedUser", "(Z)V");
+    g_applovin.m_SetDoNotSell           = env->GetMethodID(cls, "setDoNotSell", "(Z)V");
     g_applovin.m_LoadInterstitial = env->GetMethodID(cls, "loadInterstitial", "(Ljava/lang/String;)V");
     g_applovin.m_ShowInterstitial = env->GetMethodID(cls, "showInterstitial", "()V");
 }
@@ -96,6 +114,31 @@ void Initialize_Ext()
 void Initialize()
 {
     CallVoidMethod(g_applovin.m_AppLovinMaxJNI, g_applovin.m_Initialize);
+}
+
+void SetMuted(bool muted)
+{
+    CallVoidMethodBool(g_applovin.m_AppLovinMaxJNI, g_applovin.m_SetMuted, muted);
+}
+
+void SetVerboseLogging(bool verbose)
+{
+    CallVoidMethodBool(g_applovin.m_AppLovinMaxJNI, g_applovin.m_SetVerboseLogging, verbose);
+}
+
+void SetHasUserConsent(bool hasConsent)
+{
+    CallVoidMethodBool(g_applovin.m_AppLovinMaxJNI, g_applovin.m_SetHasUserConsent, hasConsent);
+}
+
+void SetIsAgeRestrictedUser(bool ageRestricted)
+{
+    CallVoidMethodBool(g_applovin.m_AppLovinMaxJNI, g_applovin.m_SetIsAgeRestrictedUser, ageRestricted);
+}
+
+void SetDoNotSell(bool doNotSell)
+{
+    CallVoidMethodBool(g_applovin.m_AppLovinMaxJNI, g_applovin.m_SetDoNotSell, doNotSell);
 }
 
 void LoadInterstitial(const char* unitId)

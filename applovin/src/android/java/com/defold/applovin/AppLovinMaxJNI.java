@@ -6,6 +6,7 @@ import com.applovin.mediation.MaxAd;
 import com.applovin.mediation.MaxAdListener;
 import com.applovin.mediation.ads.MaxInterstitialAd;
 import com.applovin.sdk.AppLovinMediationProvider;
+import com.applovin.sdk.AppLovinPrivacySettings;
 import com.applovin.sdk.AppLovinSdk;
 import com.applovin.sdk.AppLovinSdkConfiguration;
 
@@ -56,6 +57,26 @@ public class AppLovinMaxJNI {
                 sendSimpleMessage(MSG_INITIALIZATION, EVENT_COMPLETE);
             }
         } );
+    }
+
+    public void setMuted(boolean muted) {
+        AppLovinSdk.getInstance(activity).getSettings().setMuted(muted);
+    }
+
+    public void setVerboseLogging(boolean isVerboseLoggingEnabled) {
+        AppLovinSdk.getInstance(activity).getSettings().setVerboseLogging(isVerboseLoggingEnabled);
+    }
+
+    public void setHasUserConsent(boolean hasUserConsent) {
+        AppLovinPrivacySettings.setHasUserConsent(hasUserConsent, activity);
+    }
+
+    public void setIsAgeRestrictedUser(boolean isAgeRestrictedUser) {
+        AppLovinPrivacySettings.setIsAgeRestrictedUser(isAgeRestrictedUser, activity);
+    }
+
+    public void setDoNotSell(boolean doNotSell) {
+        AppLovinPrivacySettings.setDoNotSell(doNotSell, activity);
     }
 
     // https://www.baeldung.com/java-json-escaping
