@@ -118,6 +118,14 @@ static int Lua_ShowInterstitial(lua_State* L)
     return 0;
 }
 
+static int Lua_IsInterstitialLoaded(lua_State* L)
+{
+    DM_LUA_STACK_CHECK(L, 1);
+    bool is_loaded = IsInterstitialLoaded();
+    lua_pushboolean(L, is_loaded);
+    return 1;
+}
+
 static const luaL_reg Module_methods[] =
 {
     {"initialize", Lua_Initialize},
@@ -129,6 +137,7 @@ static const luaL_reg Module_methods[] =
     {"set_do_not_sell", Lua_SetDoNotSell},
     {"load_interstitial", Lua_LoadInterstitial},
     {"show_interstitial", Lua_ShowInterstitial},
+    {"is_interstitial_loaded", Lua_IsInterstitialLoaded},
     {0, 0}
 };
 

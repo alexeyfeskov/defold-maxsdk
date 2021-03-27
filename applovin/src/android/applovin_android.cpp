@@ -28,6 +28,7 @@ struct AppLovin
     jmethodID      m_SetHasUserConsent;
     jmethodID      m_SetIsAgeRestrictedUser;
     jmethodID      m_SetDoNotSell;
+    jmethodID      m_IsInterstitialLoaded;
 };
 
 static AppLovin       g_applovin;
@@ -95,6 +96,7 @@ static void InitJNIMethods(JNIEnv* env, jclass cls)
     g_applovin.m_SetDoNotSell           = env->GetMethodID(cls, "setDoNotSell", "(Z)V");
     g_applovin.m_LoadInterstitial = env->GetMethodID(cls, "loadInterstitial", "(Ljava/lang/String;)V");
     g_applovin.m_ShowInterstitial = env->GetMethodID(cls, "showInterstitial", "()V");
+    g_applovin.m_IsInterstitialLoaded = env->GetMethodID(cls, "isInterstitialLoaded", "()Z");
 }
 
 void Initialize_Ext()
@@ -149,6 +151,11 @@ void LoadInterstitial(const char* unitId)
 void ShowInterstitial()
 {
     CallVoidMethod(g_applovin.m_AppLovinMaxJNI, g_applovin.m_ShowInterstitial);
+}
+
+bool IsInterstitialLoaded()
+{
+    return CallBoolMethod(g_applovin.m_AppLovinMaxJNI, g_applovin.m_IsInterstitialLoaded);
 }
 
 }//namespace dmAppLovinMax

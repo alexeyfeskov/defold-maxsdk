@@ -13,5 +13,6 @@ void SetDoNotSell(bool doNotSell);
 
 void LoadInterstitial(const char* unitId);
 void ShowInterstitial();
+bool IsInterstitialLoaded();
 
 } //namespace dmAppLovinMax
