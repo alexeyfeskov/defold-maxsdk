@@ -1,0 +1,8 @@
+local function applovin_callback(self, message_id, message)
+	pprint(message_id, message)
+end
+
+function init(self)
+	applovin.initialize()
+	applovin.set_callback(applovin_callback)
+end
