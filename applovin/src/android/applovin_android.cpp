@@ -21,14 +21,19 @@ struct AppLovin
     jobject        m_AppLovinMaxJNI;
 
     jmethodID      m_Initialize;
-    jmethodID      m_LoadInterstitial;
-    jmethodID      m_ShowInterstitial;
     jmethodID      m_SetMuted;
     jmethodID      m_SetVerboseLogging;
     jmethodID      m_SetHasUserConsent;
     jmethodID      m_SetIsAgeRestrictedUser;
     jmethodID      m_SetDoNotSell;
+
+    jmethodID      m_LoadInterstitial;
+    jmethodID      m_ShowInterstitial;
     jmethodID      m_IsInterstitialLoaded;
+
+    jmethodID      m_LoadRewarded;
+    jmethodID      m_ShowRewarded;
+    jmethodID      m_IsRewardedLoaded;
 };
 
 static AppLovin       g_applovin;
@@ -94,9 +99,14 @@ static void InitJNIMethods(JNIEnv* env, jclass cls)
     g_applovin.m_SetHasUserConsent      = env->GetMethodID(cls, "setHasUserConsent", "(Z)V");
     g_applovin.m_SetIsAgeRestrictedUser = env->GetMethodID(cls, "setIsAgeRestrictedUser", "(Z)V");
     g_applovin.m_SetDoNotSell           = env->GetMethodID(cls, "setDoNotSell", "(Z)V");
+
     g_applovin.m_LoadInterstitial = env->GetMethodID(cls, "loadInterstitial", "(Ljava/lang/String;)V");
     g_applovin.m_ShowInterstitial = env->GetMethodID(cls, "showInterstitial", "()V");
     g_applovin.m_IsInterstitialLoaded = env->GetMethodID(cls, "isInterstitialLoaded", "()Z");
+
+    g_applovin.m_LoadRewarded     = env->GetMethodID(cls, "loadRewarded", "(Ljava/lang/String;)V");
+    g_applovin.m_ShowRewarded     = env->GetMethodID(cls, "showRewarded", "()V");
+    g_applovin.m_IsRewardedLoaded = env->GetMethodID(cls, "isRewardedLoaded", "()Z");
 }
 
 void Initialize_Ext()
@@ -156,6 +166,21 @@ void ShowInterstitial()
 bool IsInterstitialLoaded()
 {
     return CallBoolMethod(g_applovin.m_AppLovinMaxJNI, g_applovin.m_IsInterstitialLoaded);
+}
+
+void LoadRewarded(const char* unitId)
+{
+    CallVoidMethodChar(g_applovin.m_AppLovinMaxJNI, g_applovin.m_LoadRewarded, unitId);
+}
+
+void ShowRewarded()
+{
+    CallVoidMethod(g_applovin.m_AppLovinMaxJNI, g_applovin.m_ShowRewarded);
+}
+
+bool IsRewardedLoaded()
+{
+    return CallBoolMethod(g_applovin.m_AppLovinMaxJNI, g_applovin.m_IsRewardedLoaded);
 }
 
 }//namespace dmAppLovinMax

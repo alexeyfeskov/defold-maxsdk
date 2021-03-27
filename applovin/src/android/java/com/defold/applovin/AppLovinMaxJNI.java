@@ -1,10 +1,14 @@
 package com.defold.applovin;
 
 import android.app.Activity;
+import android.util.Log;
 
 import com.applovin.mediation.MaxAd;
 import com.applovin.mediation.MaxAdListener;
+import com.applovin.mediation.MaxReward;
+import com.applovin.mediation.MaxRewardedAdListener;
 import com.applovin.mediation.ads.MaxInterstitialAd;
+import com.applovin.mediation.ads.MaxRewardedAd;
 import com.applovin.sdk.AppLovinMediationProvider;
 import com.applovin.sdk.AppLovinPrivacySettings;
 import com.applovin.sdk.AppLovinSdk;
@@ -205,5 +209,99 @@ public class AppLovinMaxJNI {
 
     public boolean isInterstitialLoaded() {
         return interstitialAd != null && interstitialAd.isReady();
+    }
+
+//--------------------------------------------------
+// Rewarded ADS
+
+    private MaxRewardedAd rewardedAd;
+
+    public void loadRewarded(final String unitId) {
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                rewardedAd = MaxRewardedAd.getInstance(unitId, activity);
+                rewardedAd.setListener(new MaxRewardedAdListener() {
+                    @Override
+                    public void onAdLoaded(MaxAd ad) {
+                        if (ad == rewardedAd) {
+                            // to prevent reporting obsolete ad (if loadRewarded was called multiple times)
+                            return;
+                        }
+
+                        sendSimpleMessage(MSG_REWARDED, EVENT_LOADED);
+                    }
+
+                    @Override
+                    public void onAdLoadFailed(String adUnitId, int errorCode) {
+                        sendSimpleMessage(MSG_REWARDED, EVENT_FAILED_TO_LOAD,
+                                "code", errorCode, "adUnitId", adUnitId);
+                    }
+
+                    @Override
+                    public void onAdDisplayed(MaxAd ad) {
+                        sendSimpleMessage(MSG_REWARDED, EVENT_OPENING,
+                                "adUnitId", ad.getAdUnitId());
+                    }
+
+                    @Override
+                    public void onAdHidden(MaxAd ad) {
+                        sendSimpleMessage(MSG_REWARDED, EVENT_CLOSED,
+                                "adUnitId", ad.getAdUnitId());
+                    }
+
+                    @Override
+                    public void onAdClicked(MaxAd ad) {
+                        sendSimpleMessage(MSG_REWARDED, EVENT_CLICKED,
+                                "adUnitId", ad.getAdUnitId());
+                    }
+
+                    @Override
+                    public void onAdDisplayFailed(MaxAd ad, int errorCode) {
+                        sendSimpleMessage(MSG_REWARDED, EVENT_FAILED_TO_SHOW,
+                                "code", errorCode, "adUnitId", ad.getAdUnitId());
+                    }
+
+                    @Override
+                    public void onRewardedVideoStarted(MaxAd ad) {
+                        // Log.d(TAG, "onRewardedVideoStarted");
+                    }
+
+                    @Override
+                    public void onRewardedVideoCompleted(MaxAd ad) {
+                        // Log.d(TAG, "onRewardedVideoCompleted");
+                    }
+
+                    @Override
+                    public void onUserRewarded(MaxAd ad, MaxReward reward) {
+                        int rewardAmount = reward.getAmount();
+                        String rewardType = reward.getLabel();
+                        sendSimpleMessage(MSG_REWARDED, EVENT_EARNED_REWARD,
+                                "amount", rewardAmount, "type", rewardType);
+                    }
+                });
+
+                rewardedAd.loadAd();
+            }
+        });
+    }
+
+    public void showRewarded() {
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (isRewardedLoaded()) {
+                    rewardedAd.showAd();
+                } else {
+                    // Log.d(TAG, "The rewarded ad wasn't ready yet.");
+                    sendSimpleMessage(MSG_REWARDED, EVENT_NOT_LOADED,
+                            "error", "Can't show Rewarded AD that wasn't loaded.");
+                }
+            }
+        });
+    }
+
+    public boolean isRewardedLoaded() {
+        return rewardedAd != null && rewardedAd.isReady();
     }
 }

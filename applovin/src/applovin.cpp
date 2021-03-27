@@ -126,6 +126,35 @@ static int Lua_IsInterstitialLoaded(lua_State* L)
     return 1;
 }
 
+static int Lua_LoadRewarded(lua_State* L)
+{
+    DM_LUA_STACK_CHECK(L, 0);
+    if (lua_type(L, 1) != LUA_TSTRING) {
+        char msg[256];
+        snprintf(msg, sizeof(msg), "Expected string, got %s. Wrong type for Rewarded UnitId variable '%s'.", luaL_typename(L, 1), lua_tostring(L, 1));
+        luaL_error(L, msg);
+        return 0;
+    }
+    const char* unitId_lua = luaL_checkstring(L, 1);
+    LoadRewarded(unitId_lua);
+    return 0;
+}
+
+static int Lua_ShowRewarded(lua_State* L)
+{
+    DM_LUA_STACK_CHECK(L, 0);
+    ShowRewarded();
+    return 0;
+}
+
+static int Lua_IsRewardedLoaded(lua_State* L)
+{
+    DM_LUA_STACK_CHECK(L, 1);
+    bool is_loaded = IsRewardedLoaded();
+    lua_pushboolean(L, is_loaded);
+    return 1;
+}
+
 static const luaL_reg Module_methods[] =
 {
     {"initialize", Lua_Initialize},
@@ -135,9 +164,14 @@ static const luaL_reg Module_methods[] =
     {"set_has_user_consent", Lua_SetHasUserConsent},
     {"set_is_age_restricted_user", Lua_SetIsAgeRestrictedUser},
     {"set_do_not_sell", Lua_SetDoNotSell},
+    
     {"load_interstitial", Lua_LoadInterstitial},
     {"show_interstitial", Lua_ShowInterstitial},
     {"is_interstitial_loaded", Lua_IsInterstitialLoaded},
+
+    {"load_rewarded", Lua_LoadRewarded},
+    {"show_rewarded", Lua_ShowRewarded},
+    {"is_rewarded_loaded", Lua_IsRewardedLoaded},
     {0, 0}
 };
 
