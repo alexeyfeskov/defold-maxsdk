@@ -1,5 +1,38 @@
+local ANDROID_INTERSTITIAL_AD_UNIT = "e0cb5c7697b8a887"
+
+local function load_interstitial(self)
+	if applovin then
+		applovin.load_interstitial(ANDROID_INTERSTITIAL_AD_UNIT)
+	end
+end
+
 local function applovin_callback(self, message_id, message)
 	pprint(message_id, message)
+	if message_id == applovin.MSG_INITIALIZATION then
+		print("MSG_INITIALIZATION")
+		self.initialized = true
+		load_interstitial(self)
+	elseif message_id == applovin.MSG_INTERSTITIAL then
+		if message.event == applovin.EVENT_CLOSED then
+			print("EVENT_CLOSED: Interstitial AD closed")
+			load_interstitial(self)
+		elseif message.event == applovin.EVENT_CLICKED then
+			print("EVENT_CLICKED: Interstitial AD clicked")
+		elseif message.event == applovin.EVENT_FAILED_TO_SHOW then
+			print("EVENT_FAILED_TO_SHOW: Interstitial AD failed to show\nCode: "..message.code.."\nError: "..message.error)
+			load_interstitial(self)
+		elseif message.event == applovin.EVENT_OPENING then
+			print("EVENT_OPENING: Interstitial AD is opening")
+		elseif message.event == applovin.EVENT_FAILED_TO_LOAD then
+			print("EVENT_FAILED_TO_LOAD: Interstitial AD failed to load\nCode: "..message.code.."\nError: "..message.error)
+			load_interstitial(self)
+		elseif message.event == applovin.EVENT_LOADED then
+			print("EVENT_LOADED: Interstitial AD loaded")
+			applovin.show_interstitial()
+		elseif message.event == applovin.EVENT_NOT_LOADED then
+			print("EVENT_NOT_LOADED: can't call show_interstitial() before EVENT_LOADED\nError: "..message.error)
+		end
+	end
 end
 
 function init(self)

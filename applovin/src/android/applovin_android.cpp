@@ -21,7 +21,8 @@ struct AppLovin
     jobject        m_AppLovinMaxJNI;
 
     jmethodID      m_Initialize;
-
+    jmethodID      m_LoadInterstitial;
+    jmethodID      m_ShowInterstitial;
 };
 
 static AppLovin       g_applovin;
@@ -74,6 +75,8 @@ static void CallVoidMethodInt(jobject instance, jmethodID method, int cint)
 static void InitJNIMethods(JNIEnv* env, jclass cls)
 {
     g_applovin.m_Initialize = env->GetMethodID(cls, "initialize", "()V");
+    g_applovin.m_LoadInterstitial = env->GetMethodID(cls, "loadInterstitial", "(Ljava/lang/String;)V");
+    g_applovin.m_ShowInterstitial = env->GetMethodID(cls, "showInterstitial", "()V");
 }
 
 void Initialize_Ext()
@@ -93,6 +96,16 @@ void Initialize_Ext()
 void Initialize()
 {
     CallVoidMethod(g_applovin.m_AppLovinMaxJNI, g_applovin.m_Initialize);
+}
+
+void LoadInterstitial(const char* unitId)
+{
+    CallVoidMethodChar(g_applovin.m_AppLovinMaxJNI, g_applovin.m_LoadInterstitial, unitId);
+}
+
+void ShowInterstitial()
+{
+    CallVoidMethod(g_applovin.m_AppLovinMaxJNI, g_applovin.m_ShowInterstitial);
 }
 
 }//namespace dmAppLovinMax

@@ -26,10 +26,33 @@ static int Lua_SetCallback(lua_State* L)
     return 0;
 }
 
+static int Lua_LoadInterstitial(lua_State* L)
+{
+    DM_LUA_STACK_CHECK(L, 0);
+    if (lua_type(L, 1) != LUA_TSTRING) {
+        char msg[256];
+        snprintf(msg, sizeof(msg), "Expected string, got %s. Wrong type for Interstitial UnitId variable '%s'.", luaL_typename(L, 1), lua_tostring(L, 1));
+        luaL_error(L, msg);
+        return 0;
+    }
+    const char* unitId_lua = luaL_checkstring(L, 1);
+    LoadInterstitial(unitId_lua);
+    return 0;
+}
+
+static int Lua_ShowInterstitial(lua_State* L)
+{
+    DM_LUA_STACK_CHECK(L, 0);
+    ShowInterstitial();
+    return 0;
+}
+
 static const luaL_reg Module_methods[] =
 {
     {"initialize", Lua_Initialize},
     {"set_callback", Lua_SetCallback},
+    {"load_interstitial", Lua_LoadInterstitial},
+    {"show_interstitial", Lua_ShowInterstitial},
     {0, 0}
 };
 
@@ -42,8 +65,21 @@ static void LuaInit(lua_State* L)
     lua_pushnumber(L, (lua_Number) name); \
     lua_setfield(L, -2, #name); \
 
-    SETCONSTANT(MSG_EXAMPLE)
-    SETCONSTANT(EVENT_EXAMPLE)
+    SETCONSTANT(MSG_INTERSTITIAL)
+    SETCONSTANT(MSG_REWARDED)
+    SETCONSTANT(MSG_BANNER)
+    SETCONSTANT(MSG_INITIALIZATION)
+
+    SETCONSTANT(EVENT_CLOSED)
+    SETCONSTANT(EVENT_FAILED_TO_SHOW)
+    SETCONSTANT(EVENT_OPENING)
+    SETCONSTANT(EVENT_FAILED_TO_LOAD)
+    SETCONSTANT(EVENT_LOADED)
+    SETCONSTANT(EVENT_NOT_LOADED)
+    SETCONSTANT(EVENT_EARNED_REWARD)
+    SETCONSTANT(EVENT_COMPLETE)
+    SETCONSTANT(EVENT_CLICKED)
+    SETCONSTANT(EVENT_UNLOADED)
 
     #undef SETCONSTANT
 
