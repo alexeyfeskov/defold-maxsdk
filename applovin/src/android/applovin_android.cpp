@@ -34,6 +34,13 @@ struct AppLovin
     jmethodID      m_LoadRewarded;
     jmethodID      m_ShowRewarded;
     jmethodID      m_IsRewardedLoaded;
+
+    jmethodID      m_LoadBanner;
+    jmethodID      m_DestroyBanner;
+    jmethodID      m_ShowBanner;
+    jmethodID      m_HideBanner;
+    jmethodID      m_IsBannerLoaded;
+    jmethodID      m_IsBannerShown;
 };
 
 static AppLovin       g_applovin;
@@ -107,6 +114,13 @@ static void InitJNIMethods(JNIEnv* env, jclass cls)
     g_applovin.m_LoadRewarded     = env->GetMethodID(cls, "loadRewarded", "(Ljava/lang/String;)V");
     g_applovin.m_ShowRewarded     = env->GetMethodID(cls, "showRewarded", "()V");
     g_applovin.m_IsRewardedLoaded = env->GetMethodID(cls, "isRewardedLoaded", "()Z");
+
+    g_applovin.m_LoadBanner = env->GetMethodID(cls, "loadBanner", "(Ljava/lang/String;I)V");
+    g_applovin.m_DestroyBanner = env->GetMethodID(cls, "destroyBanner", "()V");
+    g_applovin.m_ShowBanner = env->GetMethodID(cls, "showBanner", "(I)V");
+    g_applovin.m_HideBanner = env->GetMethodID(cls, "hideBanner", "()V");
+    g_applovin.m_IsBannerLoaded = env->GetMethodID(cls, "isBannerLoaded", "()Z");
+    g_applovin.m_IsBannerShown = env->GetMethodID(cls, "isBannerShown", "()Z");
 }
 
 void Initialize_Ext()
@@ -181,6 +195,36 @@ void ShowRewarded()
 bool IsRewardedLoaded()
 {
     return CallBoolMethod(g_applovin.m_AppLovinMaxJNI, g_applovin.m_IsRewardedLoaded);
+}
+
+void LoadBanner(const char* unitId, BannerSize bannerSize)
+{
+    CallVoidMethodCharInt(g_applovin.m_AppLovinMaxJNI, g_applovin.m_LoadBanner, unitId, (int)bannerSize);
+}
+
+void DestroyBanner()
+{
+    CallVoidMethod(g_applovin.m_AppLovinMaxJNI, g_applovin.m_DestroyBanner);
+}
+
+void ShowBanner(BannerPosition bannerPos)
+{
+    CallVoidMethodInt(g_applovin.m_AppLovinMaxJNI, g_applovin.m_ShowBanner, (int)bannerPos);
+}
+
+void HideBanner()
+{
+    CallVoidMethod(g_applovin.m_AppLovinMaxJNI, g_applovin.m_HideBanner);
+}
+
+bool IsBannerLoaded()
+{
+    return CallBoolMethod(g_applovin.m_AppLovinMaxJNI, g_applovin.m_IsBannerLoaded);
+}
+
+bool IsBannerShown()
+{
+    return CallBoolMethod(g_applovin.m_AppLovinMaxJNI, g_applovin.m_IsBannerShown);
 }
 
 }//namespace dmAppLovinMax

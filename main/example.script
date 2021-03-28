@@ -1,5 +1,6 @@
 local ANDROID_INTERSTITIAL_AD_UNIT = "e0cb5c7697b8a887"
 local ANDROID_REWARDED_AD_UNIT = "6c28447a5ce258e5"
+local ANDROID_BANNER_AD_UNIT = "3e594186a1afe9cf"
 
 local function load_interstitial(self)
 	if applovin then
@@ -30,7 +31,15 @@ local function applovin_callback(self, message_id, message)
 	if message_id == applovin.MSG_INITIALIZATION then
 		print("MSG_INITIALIZATION")
 		self.initialized = true
-		load_rewarded(self)
+
+		-- pprint("is_banner_shown: " .. tostring(applovin.is_banner_shown()))
+		-- pprint("is_banner_loaded: " .. tostring(applovin.is_banner_loaded()))
+		-- applovin.show_banner(applovin.POS_BOTTOM_CENTER)
+		-- applovin.hide_banner()
+		-- applovin.destroy_banner()
+		applovin.load_banner(ANDROID_BANNER_AD_UNIT, applovin.SIZE_BANNER)
+		-- applovin.load_banner(ANDROID_BANNER_AD_UNIT, applovin.SIZE_LEADER)
+		-- applovin.load_banner(ANDROID_BANNER_AD_UNIT, applovin.SIZE_MREC)
 		
 	elseif message_id == applovin.MSG_INTERSTITIAL then
 		if message.event == applovin.EVENT_CLOSED then
@@ -72,6 +81,28 @@ local function applovin_callback(self, message_id, message)
 			print("EVENT_NOT_LOADED: can't call show_rewarded() before EVENT_LOADED\nError: "..message.error)
 		elseif message.event == applovin.EVENT_EARNED_REWARD then
 			print("EVENT_EARNED_REWARD: Reward: " .. tostring(message.amount) .. " " .. tostring(message.type))
+		end
+		
+	elseif message_id == applovin.MSG_BANNER then
+		if message.event == applovin.EVENT_LOADED then
+			print("EVENT_LOADED: Banner AD loaded.")
+			applovin.show_banner(applovin.POS_BOTTOM_CENTER)
+		elseif message.event == applovin.EVENT_OPENING then
+			print("EVENT_OPENING: Banner AD is opening")
+		elseif message.event == applovin.EVENT_FAILED_TO_LOAD then
+			print("EVENT_FAILED_TO_LOAD: Banner AD failed to load\nCode: "..message.code)
+		elseif message.event == applovin.EVENT_FAILED_TO_SHOW then
+			print("EVENT_FAILED_TO_SHOW: Banner AD failed to show")
+		elseif message.event == applovin.EVENT_EXPANDED then
+			print("EVENT_EXPANDED: Banner AD expanded")
+		elseif message.event == applovin.EVENT_COLLAPSED then
+			print("EVENT_COLLAPSED: Banner AD coppalsed")
+		elseif message.event == applovin.EVENT_CLICKED then
+			print("EVENT_CLICKED: Banner AD loaded")
+		elseif message.event == applovin.EVENT_CLOSED then
+			print("EVENT_CLOSED: Banner AD closed")
+		elseif message.event == applovin.EVENT_DESTROYED then
+			print("EVENT_DESTROYED: Banner AD destroyed")
 		end
 	end
 end
