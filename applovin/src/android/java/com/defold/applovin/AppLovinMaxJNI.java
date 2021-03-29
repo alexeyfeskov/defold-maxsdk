@@ -216,12 +216,12 @@ public class AppLovinMaxJNI {
         });
     }
 
-    public void showInterstitial() {
+    public void showInterstitial(final String placement) {
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 if (isInterstitialLoaded()) {
-                    interstitialAd.showAd();
+                    interstitialAd.showAd(placement);
                 } else {
                     // Log.d(TAG, "The interstitial ad wasn't ready yet.");
                     sendSimpleMessage(MSG_INTERSTITIAL, EVENT_NOT_LOADED,
@@ -312,12 +312,12 @@ public class AppLovinMaxJNI {
         });
     }
 
-    public void showRewarded() {
+    public void showRewarded(final String placement) {
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 if (isRewardedLoaded()) {
-                    rewardedAd.showAd();
+                    rewardedAd.showAd(placement);
                 } else {
                     // Log.d(TAG, "The rewarded ad wasn't ready yet.");
                     sendSimpleMessage(MSG_REWARDED, EVENT_NOT_LOADED,
@@ -445,7 +445,7 @@ public class AppLovinMaxJNI {
         sendSimpleMessage(MSG_BANNER, EVENT_DESTROYED);
     }
 
-    public void showBanner(final int pos) {
+    public void showBanner(final int pos, final String placement) {
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -453,6 +453,7 @@ public class AppLovinMaxJNI {
                     bannerGravity = getGravity(pos);
                     recreateBannerLayout(bannerAdView, loadedBanner.getFormat());
                     layout.setVisibility(View.VISIBLE);
+                    bannerAdView.setPlacement(placement);
                     bannerAdView.startAutoRefresh();
                     isShown = true;
                 }

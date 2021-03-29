@@ -75,9 +75,18 @@ static void CallVoidMethodChar(jobject instance, jmethodID method, const char* c
     ThreadAttacher attacher;
     JNIEnv *env = attacher.env;
 
-    jstring jstr = env->NewStringUTF(cstr);
+    jstring jstr = NULL;
+    if (cstr)
+    {
+        jstr = env->NewStringUTF(cstr);
+    }
+
     env->CallVoidMethod(instance, method, jstr);
-    env->DeleteLocalRef(jstr);
+
+    if (cstr)
+    {
+        env->DeleteLocalRef(jstr);
+    }
 }
 
 static void CallVoidMethodCharInt(jobject instance, jmethodID method, const char* cstr, int cint)
@@ -88,6 +97,25 @@ static void CallVoidMethodCharInt(jobject instance, jmethodID method, const char
     jstring jstr = env->NewStringUTF(cstr);
     env->CallVoidMethod(instance, method, jstr, cint);
     env->DeleteLocalRef(jstr);
+}
+
+static void CallVoidMethodIntChar(jobject instance, jmethodID method, int cint, const char* cstr)
+{
+    ThreadAttacher attacher;
+    JNIEnv *env = attacher.env;
+
+    jstring jstr = NULL;
+    if (cstr)
+    {
+        jstr = env->NewStringUTF(cstr);
+    }
+
+    env->CallVoidMethod(instance, method, cint, jstr);
+
+    if (cstr)
+    {
+        env->DeleteLocalRef(jstr);
+    }
 }
 
 static void CallVoidMethodInt(jobject instance, jmethodID method, int cint)
@@ -108,16 +136,16 @@ static void InitJNIMethods(JNIEnv* env, jclass cls)
     g_applovin.m_SetDoNotSell           = env->GetMethodID(cls, "setDoNotSell", "(Z)V");
 
     g_applovin.m_LoadInterstitial = env->GetMethodID(cls, "loadInterstitial", "(Ljava/lang/String;)V");
-    g_applovin.m_ShowInterstitial = env->GetMethodID(cls, "showInterstitial", "()V");
+    g_applovin.m_ShowInterstitial = env->GetMethodID(cls, "showInterstitial", "(Ljava/lang/String;)V");
     g_applovin.m_IsInterstitialLoaded = env->GetMethodID(cls, "isInterstitialLoaded", "()Z");
 
     g_applovin.m_LoadRewarded     = env->GetMethodID(cls, "loadRewarded", "(Ljava/lang/String;)V");
-    g_applovin.m_ShowRewarded     = env->GetMethodID(cls, "showRewarded", "()V");
+    g_applovin.m_ShowRewarded     = env->GetMethodID(cls, "showRewarded", "(Ljava/lang/String;)V");
     g_applovin.m_IsRewardedLoaded = env->GetMethodID(cls, "isRewardedLoaded", "()Z");
 
     g_applovin.m_LoadBanner = env->GetMethodID(cls, "loadBanner", "(Ljava/lang/String;I)V");
     g_applovin.m_DestroyBanner = env->GetMethodID(cls, "destroyBanner", "()V");
-    g_applovin.m_ShowBanner = env->GetMethodID(cls, "showBanner", "(I)V");
+    g_applovin.m_ShowBanner = env->GetMethodID(cls, "showBanner", "(ILjava/lang/String;)V");
     g_applovin.m_HideBanner = env->GetMethodID(cls, "hideBanner", "()V");
     g_applovin.m_IsBannerLoaded = env->GetMethodID(cls, "isBannerLoaded", "()Z");
     g_applovin.m_IsBannerShown = env->GetMethodID(cls, "isBannerShown", "()Z");
@@ -172,9 +200,9 @@ void LoadInterstitial(const char* unitId)
     CallVoidMethodChar(g_applovin.m_AppLovinMaxJNI, g_applovin.m_LoadInterstitial, unitId);
 }
 
-void ShowInterstitial()
+void ShowInterstitial(const char* placement)
 {
-    CallVoidMethod(g_applovin.m_AppLovinMaxJNI, g_applovin.m_ShowInterstitial);
+    CallVoidMethodChar(g_applovin.m_AppLovinMaxJNI, g_applovin.m_ShowInterstitial, placement);
 }
 
 bool IsInterstitialLoaded()
@@ -187,9 +215,9 @@ void LoadRewarded(const char* unitId)
     CallVoidMethodChar(g_applovin.m_AppLovinMaxJNI, g_applovin.m_LoadRewarded, unitId);
 }
 
-void ShowRewarded()
+void ShowRewarded(const char* placement)
 {
-    CallVoidMethod(g_applovin.m_AppLovinMaxJNI, g_applovin.m_ShowRewarded);
+    CallVoidMethodChar(g_applovin.m_AppLovinMaxJNI, g_applovin.m_ShowRewarded, placement);
 }
 
 bool IsRewardedLoaded()
@@ -207,9 +235,9 @@ void DestroyBanner()
     CallVoidMethod(g_applovin.m_AppLovinMaxJNI, g_applovin.m_DestroyBanner);
 }
 
-void ShowBanner(BannerPosition bannerPos)
+void ShowBanner(BannerPosition bannerPos, const char* placement)
 {
-    CallVoidMethodInt(g_applovin.m_AppLovinMaxJNI, g_applovin.m_ShowBanner, (int)bannerPos);
+    CallVoidMethodIntChar(g_applovin.m_AppLovinMaxJNI, g_applovin.m_ShowBanner, (int)bannerPos, placement);
 }
 
 void HideBanner()

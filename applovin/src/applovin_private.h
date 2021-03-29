@@ -31,16 +31,16 @@ void SetIsAgeRestrictedUser(bool ageRestricted);
 void SetDoNotSell(bool doNotSell);
 
 void LoadInterstitial(const char* unitId);
-void ShowInterstitial();
+void ShowInterstitial(const char* placement);
 bool IsInterstitialLoaded();
 
 void LoadRewarded(const char* unitId);
-void ShowRewarded();
+void ShowRewarded(const char* placement);
 bool IsRewardedLoaded();
 
 void LoadBanner(const char* unitId, BannerSize bannerSize);
 void DestroyBanner();
-void ShowBanner(BannerPosition bannerPos);
+void ShowBanner(BannerPosition bannerPos, const char* placement);
 void HideBanner();
 bool IsBannerLoaded();
 bool IsBannerShown();

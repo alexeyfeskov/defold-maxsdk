@@ -114,7 +114,8 @@ static int Lua_LoadInterstitial(lua_State* L)
 static int Lua_ShowInterstitial(lua_State* L)
 {
     DM_LUA_STACK_CHECK(L, 0);
-    ShowInterstitial();
+    const char* placement_lua = luaL_checkstringd(L, 1, NULL);
+    ShowInterstitial(placement_lua);
     return 0;
 }
 
@@ -143,7 +144,8 @@ static int Lua_LoadRewarded(lua_State* L)
 static int Lua_ShowRewarded(lua_State* L)
 {
     DM_LUA_STACK_CHECK(L, 0);
-    ShowRewarded();
+    const char* placement_lua = luaL_checkstringd(L, 1, NULL);
+    ShowRewarded(placement_lua);
     return 0;
 }
 
@@ -158,7 +160,7 @@ static int Lua_IsRewardedLoaded(lua_State* L)
 static int Lua_LoadBanner(lua_State* L)
 {
     DM_LUA_STACK_CHECK(L, 0);
-        if (lua_type(L, 1) != LUA_TSTRING) {
+    if (lua_type(L, 1) != LUA_TSTRING) {
         char msg[256];
         snprintf(msg, sizeof(msg), "Expected string, got %s. Wrong type for Banner UnitId variable '%s'.", luaL_typename(L, 1), lua_tostring(L, 1));
         luaL_error(L, msg);
@@ -187,7 +189,8 @@ static int Lua_ShowBanner(lua_State* L)
     if (lua_type(L, 1) != LUA_TNONE) {
         bannerPos_lua = (BannerPosition)luaL_checknumber(L, 1);
     }
-    ShowBanner(bannerPos_lua);
+    const char* placement_lua = luaL_checkstringd(L, 2, NULL);
+    ShowBanner(bannerPos_lua, placement_lua);
     return 0;
 }
 

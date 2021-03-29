@@ -16,6 +16,16 @@ bool luaL_checkbool(lua_State *L, int numArg)
     return b;
 }
 
+char* luaL_checkstringd(lua_State *L, int numArg, const char* def)
+{
+    int type = lua_type(L, numArg);
+    if (type != LUA_TNONE && type != LUA_TNIL)
+    {
+        return (char*)luaL_checkstring(L, numArg);
+    }
+    return (char*)def;
+}
+
 void luaL_push_pair_str_num(lua_State *L, const char *key, int value)
 {
     lua_pushstring(L, key);
