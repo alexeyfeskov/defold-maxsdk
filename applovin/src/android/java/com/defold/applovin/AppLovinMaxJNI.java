@@ -378,8 +378,8 @@ public class AppLovinMaxJNI {
                                 // needs to re-create layout each time
                                 recreateBannerLayout(view, ad.getFormat());
                                 loadedBanner = ad;
-                                if (!isShown) {
-                                    layout.setVisibility(View.GONE);
+                                if (isShown) {
+                                    layout.setVisibility(View.VISIBLE);
                                 }
 
                                 sendSimpleMessage(MSG_BANNER, EVENT_LOADED,
@@ -418,6 +418,7 @@ public class AppLovinMaxJNI {
                 });
 
                 view.loadAd();
+                view.stopAutoRefresh();
             }
         });
     }
