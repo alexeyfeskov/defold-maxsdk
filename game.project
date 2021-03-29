@@ -1,15 +1,20 @@
 [bootstrap]
-main_collection = /main/main.collectionc
+main_collection = /main/applovin_example.collectionc
+
+[input]
+game_binding = /input/game.input_bindingc
 
 [script]
 shared_state = 1
 
 [display]
-width = 960
-height = 640
+width = 720
+height = 1280
+dynamic_orientation = 1
 
 [project]
 title = AppLovinMax
+dependencies = https://github.com/andsve/dirtylarry/archive/master.zip
 
 [library]
 include_dirs = applovin
