@@ -175,13 +175,14 @@ public class AppLovinMaxJNI {
                             return;
                         }
 
-                        sendSimpleMessage(MSG_INTERSTITIAL, EVENT_LOADED);
+                        sendSimpleMessage(MSG_INTERSTITIAL, EVENT_LOADED,
+                                "adUnitId", ad.getAdUnitId());
                     }
 
                     @Override
                     public void onAdLoadFailed(String adUnitId, int errorCode) {
                         sendSimpleMessage(MSG_INTERSTITIAL, EVENT_FAILED_TO_LOAD,
-                                "code", errorCode, "adUnitId", adUnitId);
+                                "code", errorCode, "error", getErrorMessage(adUnitId, errorCode));
                     }
 
                     @Override
@@ -206,7 +207,7 @@ public class AppLovinMaxJNI {
                     @Override
                     public void onAdDisplayFailed(MaxAd ad, int errorCode) {
                         sendSimpleMessage(MSG_INTERSTITIAL, EVENT_FAILED_TO_SHOW,
-                                "code", errorCode, "adUnitId", ad.getAdUnitId());
+                                "code", errorCode, "error", getErrorMessage(ad, errorCode));
                     }
                 });
 
@@ -252,13 +253,14 @@ public class AppLovinMaxJNI {
                             return;
                         }
 
-                        sendSimpleMessage(MSG_REWARDED, EVENT_LOADED);
+                        sendSimpleMessage(MSG_REWARDED, EVENT_LOADED,
+                                "adUnitId", ad.getAdUnitId());
                     }
 
                     @Override
                     public void onAdLoadFailed(String adUnitId, int errorCode) {
                         sendSimpleMessage(MSG_REWARDED, EVENT_FAILED_TO_LOAD,
-                                "code", errorCode, "adUnitId", adUnitId);
+                                "code", errorCode, "error", getErrorMessage(adUnitId, errorCode));
                     }
 
                     @Override
@@ -283,7 +285,7 @@ public class AppLovinMaxJNI {
                     @Override
                     public void onAdDisplayFailed(MaxAd ad, int errorCode) {
                         sendSimpleMessage(MSG_REWARDED, EVENT_FAILED_TO_SHOW,
-                                "code", errorCode, "adUnitId", ad.getAdUnitId());
+                                "code", errorCode, "error", getErrorMessage(ad, errorCode));
                     }
 
                     @Override
@@ -368,6 +370,7 @@ public class AppLovinMaxJNI {
                             public void run() {
                                 if (view != bannerAdView) {
                                     Log.d(TAG, "Prevent reporting onAdLoaded for obsolete BannerAd (loadBanner was called multiple times)");
+                                    view.destroy();
                                     return;
                                 }
 
@@ -388,7 +391,7 @@ public class AppLovinMaxJNI {
                     @Override
                     public void onAdLoadFailed(String adUnitId, int errorCode) {
                         sendSimpleMessage(MSG_BANNER, EVENT_FAILED_TO_LOAD,
-                                "code", errorCode, "adUnitId", adUnitId);
+                                "code", errorCode, "error", getErrorMessage(adUnitId, errorCode));
                     }
 
                     @Override
@@ -410,7 +413,7 @@ public class AppLovinMaxJNI {
                     @Override
                     public void onAdDisplayFailed(MaxAd ad, int errorCode) {
                         sendSimpleMessage(MSG_BANNER, EVENT_FAILED_TO_SHOW,
-                                "code", errorCode, "adUnitId", ad.getAdUnitId());
+                                "code", errorCode, "error", getErrorMessage(ad, errorCode));
                     }
                 });
 
@@ -429,7 +432,6 @@ public class AppLovinMaxJNI {
     }
 
     private void destroyBannerUiThread() {
-        Log.d(TAG, "destroyBannerUiThreadw");
         if (!isBannerLoaded()) {
             return;
         }
@@ -446,15 +448,19 @@ public class AppLovinMaxJNI {
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (!isBannerLoaded()) {
-                    return;
+                if (isBannerLoaded()) {
+                    bannerGravity = getGravity(pos);
+                    recreateBannerLayout(bannerAdView, loadedBanner.getFormat());
+                    layout.setVisibility(View.VISIBLE);
+                    bannerAdView.startAutoRefresh();
+                    isShown = true;
                 }
-
-                bannerGravity = getGravity(pos);
-                recreateBannerLayout(bannerAdView, loadedBanner.getFormat());
-                layout.setVisibility(View.VISIBLE);
-                bannerAdView.startAutoRefresh();
-                isShown = true;
+                else
+                {
+                    // Log.d(TAG, "The banner ad wasn't ready yet.");
+                    sendSimpleMessage(MSG_REWARDED, EVENT_NOT_LOADED,
+                            "error", "Can't show Banner AD that wasn't loaded.");
+                }
             }
         });
     }
@@ -463,14 +469,11 @@ public class AppLovinMaxJNI {
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (!isBannerLoaded()) {
-                    return;
+                if (isBannerShown()) {
+                    layout.setVisibility(View.GONE);
+                    bannerAdView.stopAutoRefresh();
+                    isShown = false;
                 }
-
-                Log.d(TAG, "hideBanner runOnUiThread setVisibility");
-                layout.setVisibility(View.GONE);
-                bannerAdView.stopAutoRefresh();
-                isShown = false;
             }
         });
     }
@@ -559,12 +562,43 @@ public class AppLovinMaxJNI {
         int heightDp = adSize.getHeight();
         int widthPx = AppLovinSdkUtils.dpToPx(activity, widthDp);
         int heightPx = AppLovinSdkUtils.dpToPx(activity, heightDp);
-        // int width = (adFormat == MaxAdFormat.MREC) ? widthPx : LinearLayout.LayoutParams.MATCH_PARENT;
         LinearLayout.LayoutParams adParams = new LinearLayout.LayoutParams(widthPx, heightPx);
         adParams.setMargins(0, 0, 0, 0);
         Log.d(TAG, String.format("getAdLayoutParams format: %s size (%d x %d)dp (%d x %d)px",
                 adFormat.getLabel(), widthDp, heightDp, widthPx, heightPx));
 
         return adParams;
+    }
+
+    private String getErrorMessage(final int errorCode) {
+        switch (errorCode) {
+            case -1:
+                return "Unspecified error with one of the mediated network SDKs.";
+            case 204:
+                return "NO_FILL no ads are currently eligible for your device.";
+            case -102:
+                return "Ad request timed out (usually due to poor connectivity).";
+            case -103:
+                return "Device is not connected to the internet (e.g. airplane mode).";
+            case -2051:
+                return "Device is not connected to a VPN or the VPN connection is not working properly (Users in China Only).";
+            case -5001:
+                return "Ad failed to load due to various reasons (such as no networks being able to fill).";
+            case -5201:
+                return "Internal state error with the AppLovin MAX SDK.";
+            case -5601:
+                return "Provided Activity instance has been garbage collected while the AppLovin MAX SDK attempts to re-load an expired ad.";
+            default:
+                return "Unknown error";
+        }
+    }
+
+    private String getErrorMessage(final String adUnitId, final int errorCode) {
+        return String.format("%s\nAdUnitId:%s", getErrorMessage(errorCode), adUnitId);
+    }
+
+    private String getErrorMessage(final MaxAd ad, final int errorCode) {
+        return String.format("%s\nFormat:%s\nAdUnitId:%s\nNetwork:%s",
+                getErrorMessage(errorCode), ad.getFormat(), ad.getAdUnitId(), ad.getNetworkName());
     }
 }
