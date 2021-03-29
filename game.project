@@ -14,7 +14,7 @@ dynamic_orientation = 1
 
 [project]
 title = AppLovinMax
-dependencies = https://github.com/andsve/dirtylarry/archive/master.zip
+dependencies = https://github.com/andsve/dirtylarry/archive/master.zip,https://github.com/defold/extension-adinfo/archive/refs/tags/3.0.0.zip
 
 [library]
 include_dirs = applovin
@@ -27,4 +27,9 @@ app_manifest = /generated.appmanifest
 
 [android]
 package = com.defold.applovinexample
+
+[render]
+clear_color_red = 0.1
+clear_color_green = 0.1
+clear_color_blue = 0.1
 
