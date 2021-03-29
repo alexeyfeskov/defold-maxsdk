@@ -67,15 +67,15 @@ public class AppLovinMaxJNI {
     private static final int POS_CENTER =               7;
     // END CONSTANTS
 
-    private Activity activity;
+    private Activity mActivity;
 
     public AppLovinMaxJNI(final Activity activity) {
-        this.activity = activity;
+        mActivity = activity;
     }
 
     public void initialize() {
-        AppLovinSdk.getInstance(activity).setMediationProvider(AppLovinMediationProvider.MAX);
-        AppLovinSdk.getInstance(activity).initializeSdk(new AppLovinSdk.SdkInitializationListener() {
+        AppLovinSdk.getInstance(mActivity).setMediationProvider(AppLovinMediationProvider.MAX);
+        AppLovinSdk.getInstance(mActivity).initializeSdk(new AppLovinSdk.SdkInitializationListener() {
             @Override
             public void onSdkInitialized(final AppLovinSdkConfiguration config) {
                 sendSimpleMessage(MSG_INITIALIZATION, EVENT_COMPLETE);
@@ -83,24 +83,34 @@ public class AppLovinMaxJNI {
         });
     }
 
+    public void onActivateApp()
+    {
+        pauseBanner();
+    }
+
+    public void onDeactivateApp()
+    {
+        resumeBanner();
+    }
+
     public void setMuted(boolean muted) {
-        AppLovinSdk.getInstance(activity).getSettings().setMuted(muted);
+        AppLovinSdk.getInstance(mActivity).getSettings().setMuted(muted);
     }
 
     public void setVerboseLogging(boolean isVerboseLoggingEnabled) {
-        AppLovinSdk.getInstance(activity).getSettings().setVerboseLogging(isVerboseLoggingEnabled);
+        AppLovinSdk.getInstance(mActivity).getSettings().setVerboseLogging(isVerboseLoggingEnabled);
     }
 
     public void setHasUserConsent(boolean hasUserConsent) {
-        AppLovinPrivacySettings.setHasUserConsent(hasUserConsent, activity);
+        AppLovinPrivacySettings.setHasUserConsent(hasUserConsent, mActivity);
     }
 
     public void setIsAgeRestrictedUser(boolean isAgeRestrictedUser) {
-        AppLovinPrivacySettings.setIsAgeRestrictedUser(isAgeRestrictedUser, activity);
+        AppLovinPrivacySettings.setIsAgeRestrictedUser(isAgeRestrictedUser, mActivity);
     }
 
     public void setDoNotSell(boolean doNotSell) {
-        AppLovinPrivacySettings.setDoNotSell(doNotSell, activity);
+        AppLovinPrivacySettings.setDoNotSell(doNotSell, mActivity);
     }
 
     // https://www.baeldung.com/java-json-escaping
@@ -158,17 +168,17 @@ public class AppLovinMaxJNI {
 //--------------------------------------------------
 // Interstitial ADS
 
-    private  MaxInterstitialAd interstitialAd;
+    private  MaxInterstitialAd mInterstitialAd;
 
     public void loadInterstitial(final String unitId) {
-        activity.runOnUiThread(new Runnable() {
+        mActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                interstitialAd = new MaxInterstitialAd(unitId, activity);
-                interstitialAd.setListener(new MaxAdListener() {
+                mInterstitialAd = new MaxInterstitialAd(unitId, mActivity);
+                mInterstitialAd.setListener(new MaxAdListener() {
                     @Override
                     public void onAdLoaded(MaxAd ad) {
-                        if (ad == interstitialAd) {
+                        if (ad == mInterstitialAd) {
                             Log.d(TAG, "Prevent reporting onAdLoaded for obsolete InterstitialAd (loadInterstitial was called multiple times)");
                             return;
                         }
@@ -185,7 +195,7 @@ public class AppLovinMaxJNI {
 
                     @Override
                     public void onAdDisplayed(MaxAd ad) {
-                        interstitialAd = null;
+                        mInterstitialAd = null;
                         sendSimpleMessage(MSG_INTERSTITIAL, EVENT_OPENING,
                                 "network", ad.getNetworkName());
                     }
@@ -209,17 +219,17 @@ public class AppLovinMaxJNI {
                     }
                 });
 
-                interstitialAd.loadAd();
+                mInterstitialAd.loadAd();
             }
         });
     }
 
     public void showInterstitial(final String placement) {
-        activity.runOnUiThread(new Runnable() {
+        mActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 if (isInterstitialLoaded()) {
-                    interstitialAd.showAd(placement);
+                    mInterstitialAd.showAd(placement);
                 } else {
                     // Log.d(TAG, "The interstitial ad wasn't ready yet.");
                     sendSimpleMessage(MSG_INTERSTITIAL, EVENT_NOT_LOADED,
@@ -230,23 +240,23 @@ public class AppLovinMaxJNI {
     }
 
     public boolean isInterstitialLoaded() {
-        return interstitialAd != null && interstitialAd.isReady();
+        return mInterstitialAd != null && mInterstitialAd.isReady();
     }
 
 //--------------------------------------------------
 // Rewarded ADS
 
-    private MaxRewardedAd rewardedAd;
+    private MaxRewardedAd mRewardedAd;
 
     public void loadRewarded(final String unitId) {
-        activity.runOnUiThread(new Runnable() {
+        mActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                rewardedAd = MaxRewardedAd.getInstance(unitId, activity);
-                rewardedAd.setListener(new MaxRewardedAdListener() {
+                mRewardedAd = MaxRewardedAd.getInstance(unitId, mActivity);
+                mRewardedAd.setListener(new MaxRewardedAdListener() {
                     @Override
                     public void onAdLoaded(MaxAd ad) {
-                        if (ad == rewardedAd) {
+                        if (ad == mRewardedAd) {
                             Log.d(TAG, "Prevent reporting onAdLoaded for obsolete RewardedAd (loadRewarded was called multiple times)");
                             return;
                         }
@@ -263,7 +273,7 @@ public class AppLovinMaxJNI {
 
                     @Override
                     public void onAdDisplayed(MaxAd ad) {
-                        rewardedAd = null;
+                        mRewardedAd = null;
                         sendSimpleMessage(MSG_REWARDED, EVENT_OPENING,
                                 "network", ad.getNetworkName());
                     }
@@ -305,17 +315,17 @@ public class AppLovinMaxJNI {
                     }
                 });
 
-                rewardedAd.loadAd();
+                mRewardedAd.loadAd();
             }
         });
     }
 
     public void showRewarded(final String placement) {
-        activity.runOnUiThread(new Runnable() {
+        mActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 if (isRewardedLoaded()) {
-                    rewardedAd.showAd(placement);
+                    mRewardedAd.showAd(placement);
                 } else {
                     // Log.d(TAG, "The rewarded ad wasn't ready yet.");
                     sendSimpleMessage(MSG_REWARDED, EVENT_NOT_LOADED,
@@ -326,27 +336,50 @@ public class AppLovinMaxJNI {
     }
 
     public boolean isRewardedLoaded() {
-        return rewardedAd != null && rewardedAd.isReady();
+        return mRewardedAd != null && mRewardedAd.isReady();
     }
 
 //--------------------------------------------------
 // Banner ADS
 
-    private LinearLayout layout;
-    private MaxAd loadedBanner;
-    private MaxAdView bannerAdView;
-    private boolean isShown = false;
-    private int bannerGravity = Gravity.NO_GRAVITY;
+    private enum BannerState {
+        /**
+         * No loaded banner
+         */
+        NONE,
+
+        /**
+         * Banner is loaded but not visible
+         */
+        HIDDEN,
+
+        /**
+         * Banner is loaded and visible, auto-refresh enabled
+         */
+        SHOWN,
+
+        /**
+         * Needs to relayout banner and resume auto-refresh after app activated (focused)
+         */
+        PAUSED,
+    }
+
+
+    private BannerState mBannerState = BannerState.NONE;
+    private LinearLayout mBannerLayout;
+    private MaxAd mLoadedBanner;
+    private MaxAdView mBannerAdView;
+    private int mBannerGravity = Gravity.NO_GRAVITY;
 
     public void loadBanner(final String unitId, final int bannerSize) {
-        activity.runOnUiThread(new Runnable() {
+        mActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 destroyBannerUiThread();
                 MaxAdFormat adFormat = getMaxAdFormat(bannerSize);
-                bannerAdView = new MaxAdView(unitId, adFormat, activity);
+                mBannerAdView = new MaxAdView(unitId, adFormat, mActivity);
 
-                final MaxAdView view = bannerAdView;
+                final MaxAdView view = mBannerAdView;
                 view.setBackgroundColor(Color.TRANSPARENT);
                 view.setListener(new MaxAdViewAdListener() {
                     @Override
@@ -363,10 +396,10 @@ public class AppLovinMaxJNI {
 
                     @Override
                     public void onAdLoaded(final MaxAd ad) {
-                        activity.runOnUiThread(new Runnable() {
+                        mActivity.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                if (view != bannerAdView) {
+                                if (view != mBannerAdView) {
                                     Log.d(TAG, "Prevent reporting onAdLoaded for obsolete BannerAd (loadBanner was called multiple times)");
                                     view.destroy();
                                     return;
@@ -375,9 +408,9 @@ public class AppLovinMaxJNI {
                                 // ad format can be changed while auto-refreshing banner
                                 // needs to re-create layout each time
                                 recreateBannerLayout(view, ad.getFormat());
-                                loadedBanner = ad;
-                                if (isShown) {
-                                    layout.setVisibility(View.VISIBLE);
+                                mLoadedBanner = ad;
+                                if (mBannerState == BannerState.SHOWN) {
+                                    mBannerLayout.setVisibility(View.VISIBLE);
                                 }
 
                                 sendSimpleMessage(MSG_BANNER, EVENT_LOADED,
@@ -422,7 +455,7 @@ public class AppLovinMaxJNI {
     }
 
     public void destroyBanner() {
-        activity.runOnUiThread(new Runnable() {
+        mActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 destroyBannerUiThread();
@@ -430,30 +463,17 @@ public class AppLovinMaxJNI {
         });
     }
 
-    private void destroyBannerUiThread() {
-        if (!isBannerLoaded()) {
-            return;
-        }
-
-        removeBannerLayout();
-        bannerAdView.destroy();
-        bannerAdView = null;
-        loadedBanner = null;
-        isShown = false;
-        sendSimpleMessage(MSG_BANNER, EVENT_DESTROYED);
-    }
-
     public void showBanner(final int pos, final String placement) {
-        activity.runOnUiThread(new Runnable() {
+        mActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 if (isBannerLoaded()) {
-                    bannerGravity = getGravity(pos);
-                    recreateBannerLayout(bannerAdView, loadedBanner.getFormat());
-                    layout.setVisibility(View.VISIBLE);
-                    bannerAdView.setPlacement(placement);
-                    bannerAdView.startAutoRefresh();
-                    isShown = true;
+                    mBannerGravity = getGravity(pos);
+                    mBannerAdView.setPlacement(placement);
+                    if (mBannerState != BannerState.PAUSED) // to prevent auto-refresh while app in background (will show onAppActivated)
+                    {
+                        showBannerUiThread();
+                    }
                 }
                 else
                 {
@@ -466,24 +486,63 @@ public class AppLovinMaxJNI {
     }
 
     public void hideBanner() {
-        activity.runOnUiThread(new Runnable() {
+        mActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (isBannerShown()) {
-                    layout.setVisibility(View.GONE);
-                    bannerAdView.stopAutoRefresh();
-                    isShown = false;
+                if (isBannerLoaded()) {
+                    mBannerAdView.stopAutoRefresh();
+                    mBannerLayout.setVisibility(View.GONE);
+                    mBannerState = BannerState.HIDDEN;
                 }
             }
         });
     }
 
     public boolean isBannerLoaded() {
-        return bannerAdView != null && loadedBanner != null;
+        return mBannerAdView != null && mLoadedBanner != null;
     }
 
     public boolean isBannerShown() {
-        return isBannerLoaded() && isShown;
+        return isBannerLoaded() && mBannerState == BannerState.SHOWN;
+    }
+
+    private void destroyBannerUiThread() {
+        if (!isBannerLoaded()) {
+            return;
+        }
+
+        mBannerAdView.stopAutoRefresh();
+        mBannerAdView.destroy();
+        removeBannerLayout();
+        mBannerAdView = null;
+        mLoadedBanner = null;
+        mBannerState = BannerState.NONE;
+        sendSimpleMessage(MSG_BANNER, EVENT_DESTROYED);
+    }
+
+    private void showBannerUiThread() {
+        recreateBannerLayout(mBannerAdView, mLoadedBanner.getFormat());
+        mBannerLayout.setVisibility(View.VISIBLE);
+        mBannerAdView.startAutoRefresh();
+        mBannerState = BannerState.SHOWN;
+    }
+
+    private void pauseBanner() {
+        if (isBannerShown()) {
+            mBannerAdView.stopAutoRefresh();
+            mBannerState = BannerState.PAUSED;
+        }
+    }
+
+    private void resumeBanner() {
+        mActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (mBannerState == BannerState.PAUSED) {
+                    showBannerUiThread();
+                }
+            }
+        });
     }
 
     private int getGravity(final int bannerPosConst) {
@@ -527,20 +586,20 @@ public class AppLovinMaxJNI {
     }
 
     private void removeBannerLayout() {
-        if (layout != null) {
-            layout.removeAllViews();
-            activity.getWindowManager().removeView(layout);
-            layout = null;
+        if (mBannerLayout != null) {
+            mBannerLayout.removeAllViews();
+            mActivity.getWindowManager().removeView(mBannerLayout);
+            mBannerLayout = null;
         }
     }
 
     private void recreateBannerLayout(MaxAdView adView, MaxAdFormat adFormat) {
         removeBannerLayout();
-        layout = new LinearLayout(activity);
-        layout.setOrientation(LinearLayout.VERTICAL);
-        layout.setVisibility(View.GONE);
-        layout.addView(adView, getAdLayoutParams(adFormat));
-        activity.getWindowManager().addView(layout, getWindowLayoutParams());
+        mBannerLayout = new LinearLayout(mActivity);
+        mBannerLayout.setOrientation(LinearLayout.VERTICAL);
+        mBannerLayout.setVisibility(View.GONE);
+        mBannerLayout.addView(adView, getAdLayoutParams(adFormat));
+        mActivity.getWindowManager().addView(mBannerLayout, getWindowLayoutParams());
     }
 
     private WindowManager.LayoutParams getWindowLayoutParams() {
@@ -550,7 +609,7 @@ public class AppLovinMaxJNI {
         windowParams.width = WindowManager.LayoutParams.WRAP_CONTENT;
         windowParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
         windowParams.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
-        windowParams.gravity = bannerGravity;
+        windowParams.gravity = mBannerGravity;
         return windowParams;
     }
 
@@ -560,8 +619,8 @@ public class AppLovinMaxJNI {
         AppLovinSdkUtils.Size adSize = adFormat.getSize();
         int widthDp = adSize.getWidth();
         int heightDp = adSize.getHeight();
-        int widthPx = AppLovinSdkUtils.dpToPx(activity, widthDp);
-        int heightPx = AppLovinSdkUtils.dpToPx(activity, heightDp);
+        int widthPx = AppLovinSdkUtils.dpToPx(mActivity, widthDp);
+        int heightPx = AppLovinSdkUtils.dpToPx(mActivity, heightDp);
         LinearLayout.LayoutParams adParams = new LinearLayout.LayoutParams(widthPx, heightPx);
         adParams.setMargins(0, 0, 0, 0);
         Log.d(TAG, String.format("getAdLayoutParams format: %s size (%d x %d)dp (%d x %d)px",

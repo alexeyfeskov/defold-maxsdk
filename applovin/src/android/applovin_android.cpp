@@ -21,6 +21,8 @@ struct AppLovin
     jobject        m_AppLovinMaxJNI;
 
     jmethodID      m_Initialize;
+    jmethodID      m_OnActivateApp;
+    jmethodID      m_OnDeactivateApp;
     jmethodID      m_SetMuted;
     jmethodID      m_SetVerboseLogging;
     jmethodID      m_SetHasUserConsent;
@@ -128,27 +130,29 @@ static void CallVoidMethodInt(jobject instance, jmethodID method, int cint)
 
 static void InitJNIMethods(JNIEnv* env, jclass cls)
 {
-    g_applovin.m_Initialize = env->GetMethodID(cls, "initialize", "()V");
+    g_applovin.m_Initialize             = env->GetMethodID(cls, "initialize", "()V");
+    g_applovin.m_OnActivateApp          = env->GetMethodID(cls, "onActivateApp", "()V");
+    g_applovin.m_OnDeactivateApp        = env->GetMethodID(cls, "onDeactivateApp", "()V");
     g_applovin.m_SetMuted               = env->GetMethodID(cls, "setMuted", "(Z)V");
     g_applovin.m_SetVerboseLogging      = env->GetMethodID(cls, "setVerboseLogging", "(Z)V");
     g_applovin.m_SetHasUserConsent      = env->GetMethodID(cls, "setHasUserConsent", "(Z)V");
     g_applovin.m_SetIsAgeRestrictedUser = env->GetMethodID(cls, "setIsAgeRestrictedUser", "(Z)V");
     g_applovin.m_SetDoNotSell           = env->GetMethodID(cls, "setDoNotSell", "(Z)V");
 
-    g_applovin.m_LoadInterstitial = env->GetMethodID(cls, "loadInterstitial", "(Ljava/lang/String;)V");
-    g_applovin.m_ShowInterstitial = env->GetMethodID(cls, "showInterstitial", "(Ljava/lang/String;)V");
-    g_applovin.m_IsInterstitialLoaded = env->GetMethodID(cls, "isInterstitialLoaded", "()Z");
+    g_applovin.m_LoadInterstitial       = env->GetMethodID(cls, "loadInterstitial", "(Ljava/lang/String;)V");
+    g_applovin.m_ShowInterstitial       = env->GetMethodID(cls, "showInterstitial", "(Ljava/lang/String;)V");
+    g_applovin.m_IsInterstitialLoaded   = env->GetMethodID(cls, "isInterstitialLoaded", "()Z");
 
     g_applovin.m_LoadRewarded     = env->GetMethodID(cls, "loadRewarded", "(Ljava/lang/String;)V");
     g_applovin.m_ShowRewarded     = env->GetMethodID(cls, "showRewarded", "(Ljava/lang/String;)V");
     g_applovin.m_IsRewardedLoaded = env->GetMethodID(cls, "isRewardedLoaded", "()Z");
 
-    g_applovin.m_LoadBanner = env->GetMethodID(cls, "loadBanner", "(Ljava/lang/String;I)V");
-    g_applovin.m_DestroyBanner = env->GetMethodID(cls, "destroyBanner", "()V");
-    g_applovin.m_ShowBanner = env->GetMethodID(cls, "showBanner", "(ILjava/lang/String;)V");
-    g_applovin.m_HideBanner = env->GetMethodID(cls, "hideBanner", "()V");
+    g_applovin.m_LoadBanner     = env->GetMethodID(cls, "loadBanner", "(Ljava/lang/String;I)V");
+    g_applovin.m_DestroyBanner  = env->GetMethodID(cls, "destroyBanner", "()V");
+    g_applovin.m_ShowBanner     = env->GetMethodID(cls, "showBanner", "(ILjava/lang/String;)V");
+    g_applovin.m_HideBanner     = env->GetMethodID(cls, "hideBanner", "()V");
     g_applovin.m_IsBannerLoaded = env->GetMethodID(cls, "isBannerLoaded", "()Z");
-    g_applovin.m_IsBannerShown = env->GetMethodID(cls, "isBannerShown", "()Z");
+    g_applovin.m_IsBannerShown  = env->GetMethodID(cls, "isBannerShown", "()Z");
 }
 
 void Initialize_Ext()
@@ -163,6 +167,16 @@ void Initialize_Ext()
     jmethodID jni_constructor = env->GetMethodID(cls, "<init>", "(Landroid/app/Activity;)V");
 
     g_applovin.m_AppLovinMaxJNI = env->NewGlobalRef(env->NewObject(cls, jni_constructor, dmGraphics::GetNativeAndroidActivity()));
+}
+
+void OnActivateApp()
+{
+    CallVoidMethod(g_applovin.m_AppLovinMaxJNI, g_applovin.m_OnActivateApp);
+}
+
+void OnDeactivateApp()
+{
+    CallVoidMethod(g_applovin.m_AppLovinMaxJNI, g_applovin.m_OnDeactivateApp);
 }
 
 void Initialize()

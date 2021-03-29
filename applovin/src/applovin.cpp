@@ -320,9 +320,21 @@ static dmExtension::Result UpdateAppLovinMax(dmExtension::Params* params)
     return dmExtension::RESULT_OK;
 }
 
+static void OnEventAppLovinMax(dmExtension::Params* params, const dmExtension::Event* event)
+{
+    if(event->m_Event == dmExtension::EVENT_ID_ACTIVATEAPP)
+    {
+        OnActivateApp();
+    }
+    else if(event->m_Event == dmExtension::EVENT_ID_DEACTIVATEAPP)
+    {
+        OnDeactivateApp();
+    }
+}
+
 } //namespace dmAppLovinMax
 
-DM_DECLARE_EXTENSION(EXTENSION_NAME, LIB_NAME, dmAppLovinMax::AppInitializeAppLovinMax, dmAppLovinMax::AppFinalizeAppLovinMax, dmAppLovinMax::InitializeAppLovinMax, dmAppLovinMax::UpdateAppLovinMax, 0, dmAppLovinMax::FinalizeAppLovinMax)
+DM_DECLARE_EXTENSION(EXTENSION_NAME, LIB_NAME, dmAppLovinMax::AppInitializeAppLovinMax, dmAppLovinMax::AppFinalizeAppLovinMax, dmAppLovinMax::InitializeAppLovinMax, dmAppLovinMax::UpdateAppLovinMax, dmAppLovinMax::OnEventAppLovinMax, dmAppLovinMax::FinalizeAppLovinMax)
 
 #else
 

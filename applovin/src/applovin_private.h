@@ -22,6 +22,8 @@ enum BannerPosition
 };
 
 void Initialize_Ext();
+void OnActivateApp();
+void OnDeactivateApp();
 
 void Initialize();
 void SetMuted(bool muted);
