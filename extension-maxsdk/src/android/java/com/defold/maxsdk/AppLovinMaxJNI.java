@@ -174,15 +174,11 @@ public class AppLovinMaxJNI {
         mActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                mInterstitialAd = new MaxInterstitialAd(unitId, mActivity);
-                mInterstitialAd.setListener(new MaxAdListener() {
+                final MaxInterstitialAd adInstance = new MaxInterstitialAd(unitId, mActivity);
+                adInstance.setListener(new MaxAdListener() {
                     @Override
                     public void onAdLoaded(MaxAd ad) {
-                        if (ad == mInterstitialAd) {
-                            Log.d(TAG, "Prevent reporting onAdLoaded for obsolete InterstitialAd (loadInterstitial was called multiple times)");
-                            return;
-                        }
-
+                        mInterstitialAd = adInstance;
                         sendSimpleMessage(MSG_INTERSTITIAL, EVENT_LOADED,
                                 "network", ad.getNetworkName());
                     }
@@ -195,9 +191,22 @@ public class AppLovinMaxJNI {
 
                     @Override
                     public void onAdDisplayed(MaxAd ad) {
-                        mInterstitialAd = null;
+                        if (mInterstitialAd == adInstance) {
+                            mInterstitialAd = null;
+                        }
+
                         sendSimpleMessage(MSG_INTERSTITIAL, EVENT_OPENING,
                                 "network", ad.getNetworkName());
+                    }
+
+                    @Override
+                    public void onAdDisplayFailed(MaxAd ad, int errorCode) {
+                        if (mInterstitialAd == adInstance) {
+                            mInterstitialAd = null;
+                        }
+
+                        sendSimpleMessage(MSG_INTERSTITIAL, EVENT_FAILED_TO_SHOW,
+                                "code", errorCode, "error", getErrorMessage(ad, errorCode));
                     }
 
                     @Override
@@ -211,15 +220,9 @@ public class AppLovinMaxJNI {
                         sendSimpleMessage(MSG_INTERSTITIAL, EVENT_CLICKED,
                                 "network", ad.getNetworkName());
                     }
-
-                    @Override
-                    public void onAdDisplayFailed(MaxAd ad, int errorCode) {
-                        sendSimpleMessage(MSG_INTERSTITIAL, EVENT_FAILED_TO_SHOW,
-                                "code", errorCode, "error", getErrorMessage(ad, errorCode));
-                    }
                 });
 
-                mInterstitialAd.loadAd();
+                adInstance.loadAd();
             }
         });
     }
@@ -252,15 +255,11 @@ public class AppLovinMaxJNI {
         mActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                mRewardedAd = MaxRewardedAd.getInstance(unitId, mActivity);
-                mRewardedAd.setListener(new MaxRewardedAdListener() {
+                final MaxRewardedAd adInstance = MaxRewardedAd.getInstance(unitId, mActivity);
+                adInstance.setListener(new MaxRewardedAdListener() {
                     @Override
                     public void onAdLoaded(MaxAd ad) {
-                        if (ad == mRewardedAd) {
-                            Log.d(TAG, "Prevent reporting onAdLoaded for obsolete RewardedAd (loadRewarded was called multiple times)");
-                            return;
-                        }
-
+                        mRewardedAd = adInstance;
                         sendSimpleMessage(MSG_REWARDED, EVENT_LOADED,
                                 "network", ad.getNetworkName());
                     }
@@ -273,9 +272,22 @@ public class AppLovinMaxJNI {
 
                     @Override
                     public void onAdDisplayed(MaxAd ad) {
-                        mRewardedAd = null;
+                        if (mRewardedAd == adInstance) {
+                            mRewardedAd = null;
+                        }
+
                         sendSimpleMessage(MSG_REWARDED, EVENT_OPENING,
                                 "network", ad.getNetworkName());
+                    }
+
+                    @Override
+                    public void onAdDisplayFailed(MaxAd ad, int errorCode) {
+                        if (mRewardedAd == adInstance) {
+                            mRewardedAd = null;
+                        }
+
+                        sendSimpleMessage(MSG_REWARDED, EVENT_FAILED_TO_SHOW,
+                                "code", errorCode, "error", getErrorMessage(ad, errorCode));
                     }
 
                     @Override
@@ -288,12 +300,6 @@ public class AppLovinMaxJNI {
                     public void onAdClicked(MaxAd ad) {
                         sendSimpleMessage(MSG_REWARDED, EVENT_CLICKED,
                                 "network", ad.getNetworkName());
-                    }
-
-                    @Override
-                    public void onAdDisplayFailed(MaxAd ad, int errorCode) {
-                        sendSimpleMessage(MSG_REWARDED, EVENT_FAILED_TO_SHOW,
-                                "code", errorCode, "error", getErrorMessage(ad, errorCode));
                     }
 
                     @Override
@@ -315,7 +321,7 @@ public class AppLovinMaxJNI {
                     }
                 });
 
-                mRewardedAd.loadAd();
+                adInstance.loadAd();
             }
         });
     }
