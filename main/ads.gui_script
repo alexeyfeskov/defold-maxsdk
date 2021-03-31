@@ -157,7 +157,7 @@ function init(self)
     self.banner_ad_unit = "3e594186a1afe9cf"
     self.mrec_ad_unit = "acb492346359581d"
     
-    self.show_pos = 1
+    self.show_pos = 0 -- will auto-increment BEFORE each use
     self.banner_positions = {
         "POS_BOTTOM_CENTER",
         "POS_BOTTOM_LEFT",
@@ -169,7 +169,7 @@ function init(self)
         "POS_CENTER"
     }
 
-    self.show_size = 1
+    self.show_size = 0 -- will auto-increment BEFORE each use
     self.banner_sizes = {
         "SIZE_BANNER",
         "SIZE_LEADER",

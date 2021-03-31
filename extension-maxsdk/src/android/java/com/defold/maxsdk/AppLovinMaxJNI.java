@@ -6,7 +6,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.applovin.mediation.MaxAd;
 import com.applovin.mediation.MaxAdFormat;
@@ -372,7 +372,7 @@ public class AppLovinMaxJNI {
 
 
     private BannerState mBannerState = BannerState.NONE;
-    private LinearLayout mBannerLayout;
+    private RelativeLayout mBannerLayout;
     private MaxAd mLoadedBanner;
     private MaxAdView mBannerAdView;
     private int mBannerGravity = Gravity.NO_GRAVITY;
@@ -601,8 +601,7 @@ public class AppLovinMaxJNI {
 
     private void recreateBannerLayout(MaxAdView adView, MaxAdFormat adFormat) {
         removeBannerLayout();
-        mBannerLayout = new LinearLayout(mActivity);
-        mBannerLayout.setOrientation(LinearLayout.VERTICAL);
+        mBannerLayout = new RelativeLayout(mActivity);
         mBannerLayout.setVisibility(View.GONE);
         mBannerLayout.addView(adView, getAdLayoutParams(adFormat));
         mActivity.getWindowManager().addView(mBannerLayout, getWindowLayoutParams());
@@ -619,7 +618,7 @@ public class AppLovinMaxJNI {
         return windowParams;
     }
 
-    private LinearLayout.LayoutParams getAdLayoutParams(MaxAdFormat adFormat) {
+    private RelativeLayout.LayoutParams getAdLayoutParams(MaxAdFormat adFormat) {
         // TODO how to determine is adaptive banner? see MaxAdFormat.getAdaptiveSize()
         // NOTE: Only AdMob / Google Ad Manager currently has support for adaptive banners and the maximum height is 15% the height of the screen.
         AppLovinSdkUtils.Size adSize = adFormat.getSize();
@@ -627,7 +626,8 @@ public class AppLovinMaxJNI {
         int heightDp = adSize.getHeight();
         int widthPx = AppLovinSdkUtils.dpToPx(mActivity, widthDp);
         int heightPx = AppLovinSdkUtils.dpToPx(mActivity, heightDp);
-        LinearLayout.LayoutParams adParams = new LinearLayout.LayoutParams(widthPx, heightPx);
+        int width = (adFormat == MaxAdFormat.MREC) ? widthPx : RelativeLayout.LayoutParams.MATCH_PARENT;
+        RelativeLayout.LayoutParams adParams = new RelativeLayout.LayoutParams(width, heightPx);
         adParams.setMargins(0, 0, 0, 0);
         Log.d(TAG, String.format("getAdLayoutParams format: %s size (%d x %d)dp (%d x %d)px",
                 adFormat.getLabel(), widthDp, heightDp, widthPx, heightPx));
