@@ -1,4 +1,4 @@
-package com.defold.applovin;
+package com.defold.maxsdk;
 
 import android.app.Activity;
 import android.graphics.Color;
@@ -30,10 +30,10 @@ public class AppLovinMaxJNI {
 
     private static final String TAG = "AppLovinMaxJNI";
 
-    public static native void applovinAddToQueue(int msg, String json);
+    public static native void maxsdkAddToQueue(int msg, String json);
 
     // CONSTANTS:
-    // duplicate of enums from applovin_callback_private.h:
+    // duplicate of enums from maxsdk_callback_private.h:
     private static final int MSG_INTERSTITIAL =         1;
     private static final int MSG_REWARDED =             2;
     private static final int MSG_BANNER =               3;
@@ -52,7 +52,7 @@ public class AppLovinMaxJNI {
     private static final int EVENT_EXPANDED =           11;
     private static final int EVENT_COLLAPSED =          12;
 
-    // duplicate of enums from applovin_private.h:
+    // duplicate of enums from maxsdk_private.h:
     private static final int SIZE_BANNER =              0;
     private static final int SIZE_LEADER =              1;
     private static final int SIZE_MREC =                2;
@@ -135,7 +135,7 @@ public class AppLovinMaxJNI {
         } catch (JSONException e) {
             message = getJsonConversionErrorMessage(e.getMessage());
         }
-        applovinAddToQueue(msg, message);
+        maxsdkAddToQueue(msg, message);
     }
 
     private void sendSimpleMessage(int msg, int eventId, String key_2, String value_2) {
@@ -148,7 +148,7 @@ public class AppLovinMaxJNI {
         } catch (JSONException e) {
             message = getJsonConversionErrorMessage(e.getMessage());
         }
-        applovinAddToQueue(msg, message);
+        maxsdkAddToQueue(msg, message);
     }
 
     private void sendSimpleMessage(int msg, int eventId, String key_2, int value_2, String key_3, String value_3) {
@@ -162,7 +162,7 @@ public class AppLovinMaxJNI {
         } catch (JSONException e) {
             message = getJsonConversionErrorMessage(e.getMessage());
         }
-        applovinAddToQueue(msg, message);
+        maxsdkAddToQueue(msg, message);
     }
 
 //--------------------------------------------------

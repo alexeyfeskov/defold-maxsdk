@@ -1,6 +1,6 @@
 #pragma once
 
-#include "applovin_private.h"
+#include "maxsdk_private.h"
 #include <dmsdk/sdk.h>
 
 namespace dmAppLovinMax {

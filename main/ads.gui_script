@@ -40,12 +40,12 @@ local function update_ui(self)
         gui.set_enabled(gui.get_node("load_ad/larrybutton"), true)
         gui.set_enabled(gui.get_node("hide_ad/larrybutton"), false)
         gui.set_enabled(gui.get_node("destroy_ad/larrybutton"), false)
-        if self.ad_type == applovin.MSG_INTERSTITIAL then
-            gui.set_enabled(gui.get_node("show_ad/larrybutton"), applovin.is_interstitial_loaded())
-        elseif self.ad_type == applovin.MSG_REWARDED then
-            gui.set_enabled(gui.get_node("show_ad/larrybutton"), applovin.is_rewarded_loaded())
-        elseif self.ad_type == applovin.MSG_BANNER then
-            local is_banner_loaded = applovin.is_banner_loaded()
+        if self.ad_type == maxsdk.MSG_INTERSTITIAL then
+            gui.set_enabled(gui.get_node("show_ad/larrybutton"), maxsdk.is_interstitial_loaded())
+        elseif self.ad_type == maxsdk.MSG_REWARDED then
+            gui.set_enabled(gui.get_node("show_ad/larrybutton"), maxsdk.is_rewarded_loaded())
+        elseif self.ad_type == maxsdk.MSG_BANNER then
+            local is_banner_loaded = maxsdk.is_banner_loaded()
             gui.set_enabled(gui.get_node("show_ad/larrybutton"), is_banner_loaded)
             gui.set_enabled(gui.get_node("hide_ad/larrybutton"), is_banner_loaded)
             gui.set_enabled(gui.get_node("destroy_ad/larrybutton"), is_banner_loaded)
@@ -69,68 +69,68 @@ local function set_block_height(height)
     gui.set_size(height_b_node, size)
 end
 
-local function applovin_callback(self, message_id, message)
+local function maxsdk_callback(self, message_id, message)
     pprint(message_id, message)
-    if message_id == applovin.MSG_INITIALIZATION then
+    if message_id == maxsdk.MSG_INITIALIZATION then
         print("MSG_INITIALIZATION")
         self.initialized = true
 
-    elseif message_id == applovin.MSG_INTERSTITIAL then
-        if message.event == applovin.EVENT_CLOSED then
+    elseif message_id == maxsdk.MSG_INTERSTITIAL then
+        if message.event == maxsdk.EVENT_CLOSED then
             print("EVENT_CLOSED: Interstitial AD closed")
-        elseif message.event == applovin.EVENT_CLICKED then
+        elseif message.event == maxsdk.EVENT_CLICKED then
             print("EVENT_CLICKED: Interstitial AD clicked")
-        elseif message.event == applovin.EVENT_FAILED_TO_SHOW then
+        elseif message.event == maxsdk.EVENT_FAILED_TO_SHOW then
             print("EVENT_FAILED_TO_SHOW: Interstitial AD failed to show\nCode: "..message.code.."\nError: "..message.error)
-        elseif message.event == applovin.EVENT_OPENING then
+        elseif message.event == maxsdk.EVENT_OPENING then
             -- on android this event fire only when ADS activity closed =(
             print("EVENT_OPENING: Interstitial AD is opening")
-        elseif message.event == applovin.EVENT_FAILED_TO_LOAD then
+        elseif message.event == maxsdk.EVENT_FAILED_TO_LOAD then
             print("EVENT_FAILED_TO_LOAD: Interstitial AD failed to load\nCode: "..message.code.."\nError: "..message.error)
-        elseif message.event == applovin.EVENT_LOADED then
+        elseif message.event == maxsdk.EVENT_LOADED then
             print("EVENT_LOADED: Interstitial AD loaded. Network: "..tostring(message.network))
-        elseif message.event == applovin.EVENT_NOT_LOADED then
+        elseif message.event == maxsdk.EVENT_NOT_LOADED then
             print("EVENT_NOT_LOADED: can't call show_interstitial() before EVENT_LOADED\nError: "..message.error)
         end
 
-    elseif message_id == applovin.MSG_REWARDED then
-        if message.event == applovin.EVENT_CLOSED then
+    elseif message_id == maxsdk.MSG_REWARDED then
+        if message.event == maxsdk.EVENT_CLOSED then
             print("EVENT_CLOSED: Rewarded AD closed")
-        elseif message.event == applovin.EVENT_FAILED_TO_SHOW then
+        elseif message.event == maxsdk.EVENT_FAILED_TO_SHOW then
             print("EVENT_FAILED_TO_SHOW: Rewarded AD failed to show\nCode: "..message.code.."\nError: "..message.error)
-        elseif message.event == applovin.EVENT_OPENING then
+        elseif message.event == maxsdk.EVENT_OPENING then
             -- on android this event fire only when ADS activity closed =(
             print("EVENT_OPENING: Rewarded AD is opening")
-        elseif message.event == applovin.EVENT_FAILED_TO_LOAD then
+        elseif message.event == maxsdk.EVENT_FAILED_TO_LOAD then
             print("EVENT_FAILED_TO_LOAD: Rewarded AD failed to load\nCode: "..message.code.."\nError: "..message.error)
-        elseif message.event == applovin.EVENT_LOADED then
+        elseif message.event == maxsdk.EVENT_LOADED then
             print("EVENT_LOADED: Rewarded AD loaded. Network: "..tostring(message.network))
-        elseif message.event == applovin.EVENT_NOT_LOADED then
+        elseif message.event == maxsdk.EVENT_NOT_LOADED then
             print("EVENT_NOT_LOADED: can't call show_rewarded() before EVENT_LOADED\nError: "..message.error)
-        elseif message.event == applovin.EVENT_EARNED_REWARD then
+        elseif message.event == maxsdk.EVENT_EARNED_REWARD then
             print("EVENT_EARNED_REWARD: Reward: " .. tostring(message.amount) .. " " .. tostring(message.type))
         end
 
-    elseif message_id == applovin.MSG_BANNER then
-        if message.event == applovin.EVENT_LOADED then
+    elseif message_id == maxsdk.MSG_BANNER then
+        if message.event == maxsdk.EVENT_LOADED then
             print("EVENT_LOADED: Banner AD loaded. Network: "..tostring(message.network))
-        elseif message.event == applovin.EVENT_OPENING then
+        elseif message.event == maxsdk.EVENT_OPENING then
             print("EVENT_OPENING: Banner AD is opening")
-        elseif message.event == applovin.EVENT_FAILED_TO_LOAD then
+        elseif message.event == maxsdk.EVENT_FAILED_TO_LOAD then
             print("EVENT_FAILED_TO_LOAD: Banner AD failed to load\nCode: "..message.code.."\nError: "..message.error)
-        elseif message.event == applovin.EVENT_FAILED_TO_SHOW then
+        elseif message.event == maxsdk.EVENT_FAILED_TO_SHOW then
             print("EVENT_FAILED_TO_SHOW: Banner AD failed to show\nCode: "..message.code.."\nError: "..message.error)
-        elseif message.event == applovin.EVENT_EXPANDED then
+        elseif message.event == maxsdk.EVENT_EXPANDED then
             print("EVENT_EXPANDED: Banner AD expanded")
-        elseif message.event == applovin.EVENT_COLLAPSED then
+        elseif message.event == maxsdk.EVENT_COLLAPSED then
             print("EVENT_COLLAPSED: Banner AD coppalsed")
-        elseif message.event == applovin.EVENT_CLICKED then
+        elseif message.event == maxsdk.EVENT_CLICKED then
             print("EVENT_CLICKED: Banner AD clicked")
-        elseif message.event == applovin.EVENT_CLOSED then
+        elseif message.event == maxsdk.EVENT_CLOSED then
             print("EVENT_CLOSED: Banner AD closed")
-        elseif message.event == applovin.EVENT_DESTROYED then
+        elseif message.event == maxsdk.EVENT_DESTROYED then
             print("EVENT_DESTROYED: Banner AD destroyed")
-        elseif message.event == applovin.EVENT_NOT_LOADED then
+        elseif message.event == maxsdk.EVENT_NOT_LOADED then
             print("EVENT_NOT_LOADED: can't call show_banner() before EVENT_LOADED\nError: "..message.error)
         end
     end
@@ -141,10 +141,10 @@ end
 local function window_callback(self, event, data)
     if event == window.WINDOW_EVENT_RESIZED then
         print("Window resized: ", data.width, data.height)
-        if applovin and applovin.is_banner_shown() then
+        if maxsdk and maxsdk.is_banner_shown() then
             local banner_pos_name = self.banner_positions[self.show_pos]
             print("Force relayout banner to " .. banner_pos_name)
-            applovin.show_banner(applovin[banner_pos_name])
+            maxsdk.show_banner(maxsdk[banner_pos_name])
         end
     end
 end
@@ -176,8 +176,8 @@ function init(self)
         "SIZE_MREC"
     }
 
-    if applovin then
-        applovin.set_callback(applovin_callback)
+    if maxsdk then
+        maxsdk.set_callback(maxsdk_callback)
         window.set_listener(window_callback)
     end
 
@@ -191,24 +191,24 @@ function init(self)
 end
 
 function on_input(self, action_id, action)
-    if not applovin then
+    if not maxsdk then
         return
     end
     
     local prev_type = self.ad_type
 
     dirtylarry:button("initialization", action_id, action, function ()
-        applovin.set_muted(false)
-        applovin.set_verbose_logging(true)
-        applovin.set_has_user_consent(true)
-        applovin.set_is_age_restricted_user(false)
-        applovin.set_do_not_sell(false)
-        applovin.initialize()
+        maxsdk.set_muted(false)
+        maxsdk.set_verbose_logging(true)
+        maxsdk.set_has_user_consent(true)
+        maxsdk.set_is_age_restricted_user(false)
+        maxsdk.set_do_not_sell(false)
+        maxsdk.initialize()
     end)
     
-    self.ad_type = dirtylarry:radio("ad_type_interstitial", action_id, action, applovin.MSG_INTERSTITIAL, self.ad_type)
-    self.ad_type = dirtylarry:radio("ad_type_rewarded", action_id, action, applovin.MSG_REWARDED, self.ad_type)
-    self.ad_type = dirtylarry:radio("ad_type_banner", action_id, action, applovin.MSG_BANNER, self.ad_type)
+    self.ad_type = dirtylarry:radio("ad_type_interstitial", action_id, action, maxsdk.MSG_INTERSTITIAL, self.ad_type)
+    self.ad_type = dirtylarry:radio("ad_type_rewarded", action_id, action, maxsdk.MSG_REWARDED, self.ad_type)
+    self.ad_type = dirtylarry:radio("ad_type_banner", action_id, action, maxsdk.MSG_BANNER, self.ad_type)
     
     if prev_type ~= self.ad_type then
         update_ui(self)
@@ -216,54 +216,54 @@ function on_input(self, action_id, action)
     
     dirtylarry:button("load_ad", action_id, action, function ()
         if self.ad_type == 0 then
-        elseif self.ad_type == applovin.MSG_INTERSTITIAL then
-            print("applovin.load_interstitial()")
-            applovin.load_interstitial(self.interstitial_ad_unit)
-        elseif self.ad_type == applovin.MSG_REWARDED then
-            print("applovin.load_rewarded()")
-            applovin.load_rewarded(self.rewarded_ad_unit)
-        elseif self.ad_type == applovin.MSG_BANNER then
+        elseif self.ad_type == maxsdk.MSG_INTERSTITIAL then
+            print("maxsdk.load_interstitial()")
+            maxsdk.load_interstitial(self.interstitial_ad_unit)
+        elseif self.ad_type == maxsdk.MSG_REWARDED then
+            print("maxsdk.load_rewarded()")
+            maxsdk.load_rewarded(self.rewarded_ad_unit)
+        elseif self.ad_type == maxsdk.MSG_BANNER then
             self.show_size = 1 + math.fmod(self.show_size, #self.banner_sizes)
             local size_name = self.banner_sizes[self.show_size]
             local is_mrec = (size_name == "SIZE_MREC")
             local ad_unit = is_mrec and self.mrec_ad_unit or self.banner_ad_unit
-            print("applovin.load_banner('"..ad_unit.."', applovin."..size_name..")")
-            applovin.load_banner(ad_unit, applovin[size_name])
+            print("maxsdk.load_banner('"..ad_unit.."', maxsdk."..size_name..")")
+            maxsdk.load_banner(ad_unit, maxsdk[size_name])
         end
     end)
 
     if gui.is_enabled(gui.get_node("show_ad/larrybutton")) then
         dirtylarry:button("show_ad", action_id, action, function ()
             if self.ad_type == 0 then
-            elseif self.ad_type == applovin.MSG_INTERSTITIAL then
-                print("applovin.show_interstitial()")
-                applovin.show_interstitial()
-            elseif self.ad_type == applovin.MSG_REWARDED then
-                print("applovin.show_rewarded()")
-                applovin.show_rewarded()
-            elseif self.ad_type == applovin.MSG_BANNER then
+            elseif self.ad_type == maxsdk.MSG_INTERSTITIAL then
+                print("maxsdk.show_interstitial()")
+                maxsdk.show_interstitial()
+            elseif self.ad_type == maxsdk.MSG_REWARDED then
+                print("maxsdk.show_rewarded()")
+                maxsdk.show_rewarded()
+            elseif self.ad_type == maxsdk.MSG_BANNER then
                 self.show_pos = 1 + math.fmod(self.show_pos, #self.banner_positions)
                 local pos_name = self.banner_positions[self.show_pos]
-                print("applovin.show_banner(applovin."..pos_name..")")
-                applovin.show_banner(applovin[pos_name])
+                print("maxsdk.show_banner(maxsdk."..pos_name..")")
+                maxsdk.show_banner(maxsdk[pos_name])
             end
         end)
     end
     
     if gui.is_enabled(gui.get_node("hide_ad/larrybutton")) then
         dirtylarry:button("hide_ad", action_id, action, function ()
-            if self.ad_type == applovin.MSG_BANNER then
-                print("applovin.hide_banner()")
-                applovin.hide_banner()
+            if self.ad_type == maxsdk.MSG_BANNER then
+                print("maxsdk.hide_banner()")
+                maxsdk.hide_banner()
             end
         end)
     end
 
     if gui.is_enabled(gui.get_node("destroy_ad/larrybutton")) then
         dirtylarry:button("destroy_ad", action_id, action, function ()
-            if self.ad_type == applovin.MSG_BANNER then
-                print("applovin.destroy_banner()")
-                applovin.destroy_banner()
+            if self.ad_type == maxsdk.MSG_BANNER then
+                print("maxsdk.destroy_banner()")
+                maxsdk.destroy_banner()
             end
         end)
     end

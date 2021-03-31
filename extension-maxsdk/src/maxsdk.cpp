@@ -1,6 +1,6 @@
 #define EXTENSION_NAME AppLovinMaxExt
 #define LIB_NAME "AppLovinMax"
-#define MODULE_NAME "applovin"
+#define MODULE_NAME "maxsdk"
 
 #define DLIB_LOG_DOMAIN LIB_NAME
 #include <dmsdk/sdk.h>
@@ -8,8 +8,8 @@
 #if defined(DM_PLATFORM_ANDROID) //|| defined(DM_PLATFORM_IOS)
 
 #include "utils/LuaUtils.h"
-#include "applovin_private.h"
-#include "applovin_callback_private.h"
+#include "maxsdk_private.h"
+#include "maxsdk_callback_private.h"
 
 namespace dmAppLovinMax {
 

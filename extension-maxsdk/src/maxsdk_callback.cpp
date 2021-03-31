@@ -1,6 +1,6 @@
 #if defined(DM_PLATFORM_ANDROID)// || defined(DM_PLATFORM_IOS)
 
-#include "applovin_callback_private.h"
+#include "maxsdk_callback_private.h"
 #include "utils/LuaUtils.h"
 #include <stdlib.h>
 
@@ -23,7 +23,7 @@ static void InvokeCallback(MessageId type, char*json)
 {
     if (!dmScript::IsCallbackValid(m_luaCallback))
     {
-        dmLogError("AppLovinMax callback is invalid. Set new callback unsing `applovin.setCallback()` funciton.");
+        dmLogError("AppLovinMax callback is invalid. Set new callback unsing `maxsdk.setCallback()` funciton.");
         return;
     }
 
