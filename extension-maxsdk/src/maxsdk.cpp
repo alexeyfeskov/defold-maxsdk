@@ -97,6 +97,20 @@ static int Lua_SetDoNotSell(lua_State* L)
     return 0;
 }
 
+static int Lua_SetFbDataProcessingOptions(lua_State* L)
+{
+    DM_LUA_STACK_CHECK(L, 0);
+    const char* mode_lua = luaL_checkstringd(L, 1, NULL);
+    int country_lua = 0;
+    int state_lua = 0;
+    if (mode_lua) {
+        country_lua = (int)luaL_checknumber(L, 2);
+        state_lua = (int)luaL_checknumber(L, 3);
+    }
+    SetFbDataProcessingOptions(mode_lua, country_lua, state_lua);
+    return 0;
+}
+
 static int Lua_LoadInterstitial(lua_State* L)
 {
     DM_LUA_STACK_CHECK(L, 0);
@@ -226,6 +240,7 @@ static const luaL_reg Module_methods[] =
     {"set_has_user_consent", Lua_SetHasUserConsent},
     {"set_is_age_restricted_user", Lua_SetIsAgeRestrictedUser},
     {"set_do_not_sell", Lua_SetDoNotSell},
+    {"set_fb_data_processing_options", Lua_SetFbDataProcessingOptions},
 
     {"load_interstitial", Lua_LoadInterstitial},
     {"show_interstitial", Lua_ShowInterstitial},

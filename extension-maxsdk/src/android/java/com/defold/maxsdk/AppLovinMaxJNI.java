@@ -23,6 +23,8 @@ import com.applovin.sdk.AppLovinSdk;
 import com.applovin.sdk.AppLovinSdkConfiguration;
 import com.applovin.sdk.AppLovinSdkUtils;
 
+import com.facebook.ads.AdSettings;
+
 import org.json.JSONObject;
 import org.json.JSONException;
 
@@ -111,6 +113,16 @@ public class AppLovinMaxJNI {
 
     public void setDoNotSell(boolean doNotSell) {
         AppLovinPrivacySettings.setDoNotSell(doNotSell, mActivity);
+    }
+
+    public void setFbDataProcessingOptions(String mode, int country, int state) {
+        if (mode != null) {
+            AdSettings.setDataProcessingOptions(new String[] {mode}, country, state);
+            Log.d(TAG, String.format("AdSettings.setDataProcessingOptions(new String[] {`%s`}, %d, %d)", mode, country, state));
+        } else {
+            AdSettings.setDataProcessingOptions(new String[] {});
+            Log.d(TAG, "AdSettings.setDataProcessingOptions(new String[] {})");
+        }
     }
 
     // https://www.baeldung.com/java-json-escaping

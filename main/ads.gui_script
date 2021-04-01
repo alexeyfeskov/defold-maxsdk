@@ -198,11 +198,21 @@ function on_input(self, action_id, action)
     local prev_type = self.ad_type
 
     dirtylarry:button("initialization", action_id, action, function ()
-        maxsdk.set_muted(false)
-        maxsdk.set_verbose_logging(true)
+        -- https://developers.facebook.com/docs/audience-network/guides/ccpa
+        -- To explicitly not enable Limited Data Use (LDU) mode, use:
+        maxsdk.set_fb_data_processing_options(nil)
+        -- To enable LDU with geolocation, use:
+        maxsdk.set_fb_data_processing_options("LDU", 0, 0)
+        -- To enable LDU for users and specify user geography, use
+        -- Country: 1 to indicate USA, State: 1000 to indicate California.
+        maxsdk.set_fb_data_processing_options("LDU", 1, 1000)
+
         maxsdk.set_has_user_consent(true)
         maxsdk.set_is_age_restricted_user(false)
         maxsdk.set_do_not_sell(false)
+
+        maxsdk.set_muted(false)
+        maxsdk.set_verbose_logging(true)
         maxsdk.initialize()
     end)
     

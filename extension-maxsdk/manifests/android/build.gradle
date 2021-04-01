@@ -1,5 +1,13 @@
+repositories {
+    google()
+    mavenCentral()
+}
+
 dependencies {
   // https://dash.applovin.com/documentation/mediation/android/getting-started/integration
   compile 'com.applovin:applovin-sdk:10.1.1'
-  compile 'com.google.android.gms:play-services-ads-identifier:17.0.0'
+
+  compile 'com.applovin.mediation:facebook-adapter:6.3.0.0'
+  compile 'com.android.support:recyclerview-v7:28.+'
+  compile 'com.android.support:appcompat-v7:28.+'
 }

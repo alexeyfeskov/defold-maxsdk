@@ -28,6 +28,7 @@ struct AppLovin
     jmethodID      m_SetHasUserConsent;
     jmethodID      m_SetIsAgeRestrictedUser;
     jmethodID      m_SetDoNotSell;
+    jmethodID      m_SetFbDataProcessingOptions;
 
     jmethodID      m_LoadInterstitial;
     jmethodID      m_ShowInterstitial;
@@ -101,6 +102,35 @@ static void CallVoidMethodCharInt(jobject instance, jmethodID method, const char
     env->DeleteLocalRef(jstr);
 }
 
+static void CallVoidMethodCharIntInt(jobject instance, jmethodID method, const char* cstr, int cint1, int cint2)
+{
+    ThreadAttacher attacher;
+    JNIEnv *env = attacher.env;
+
+    jstring jstr = env->NewStringUTF(cstr);
+    env->CallVoidMethod(instance, method, jstr, cint1, cint2);
+    env->DeleteLocalRef(jstr);
+}
+
+static void _CallVoidMethodCharIntInt(jobject instance, jmethodID method, const char* cstr, int cint1, int cint2)
+{
+    ThreadAttacher attacher;
+    JNIEnv *env = attacher.env;
+
+    jstring jstr = NULL;
+    if (cstr)
+    {
+        jstr = env->NewStringUTF(cstr);
+    }
+
+    env->CallVoidMethod(instance, method, jstr, cint1, cint2);
+    
+    if (cstr)
+    {
+        env->DeleteLocalRef(jstr);
+    }
+}
+
 static void CallVoidMethodIntChar(jobject instance, jmethodID method, int cint, const char* cstr)
 {
     ThreadAttacher attacher;
@@ -138,6 +168,7 @@ static void InitJNIMethods(JNIEnv* env, jclass cls)
     g_maxsdk.m_SetHasUserConsent      = env->GetMethodID(cls, "setHasUserConsent", "(Z)V");
     g_maxsdk.m_SetIsAgeRestrictedUser = env->GetMethodID(cls, "setIsAgeRestrictedUser", "(Z)V");
     g_maxsdk.m_SetDoNotSell           = env->GetMethodID(cls, "setDoNotSell", "(Z)V");
+    g_maxsdk.m_SetFbDataProcessingOptions = env->GetMethodID(cls, "setFbDataProcessingOptions", "(Ljava/lang/String;II)V");
 
     g_maxsdk.m_LoadInterstitial       = env->GetMethodID(cls, "loadInterstitial", "(Ljava/lang/String;)V");
     g_maxsdk.m_ShowInterstitial       = env->GetMethodID(cls, "showInterstitial", "(Ljava/lang/String;)V");
@@ -207,6 +238,11 @@ void SetIsAgeRestrictedUser(bool ageRestricted)
 void SetDoNotSell(bool doNotSell)
 {
     CallVoidMethodBool(g_maxsdk.m_AppLovinMaxJNI, g_maxsdk.m_SetDoNotSell, doNotSell);
+}
+
+void SetFbDataProcessingOptions(const char* cstr, int cint1, int cint2)
+{
+    CallVoidMethodCharIntInt(g_maxsdk.m_AppLovinMaxJNI, g_maxsdk.m_SetFbDataProcessingOptions, cstr, cint1, cint2);
 }
 
 void LoadInterstitial(const char* unitId)
