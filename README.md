@@ -19,6 +19,10 @@ or point to the ZIP file of a [specific release](https://github.com/alexeyfeskov
 
 ## Example
 
+See the [example folder](https://github.com/alexeyfeskov/defold-maxsdk/tree/master/example) for understand how to use extension. Especially [ui.gui_script](https://github.com/alexeyfeskov/defold-maxsdk/blob/master//example/ads.gui_script) file.
+
+## LUA Api
+
 Please, read original [Android API docs](https://dash.applovin.com/documentation/mediation/android/getting-started/integration)
 
 ```lua
@@ -81,7 +85,7 @@ end
 
 ------------------------
 -- Receive SDK events --
--------------------------
+------------------------
 function maxsdk_callback(self, message_id, message)
 	if message_id == maxsdk.MSG_INITIALIZATION then
 		print("MSG_INITIALIZATION")

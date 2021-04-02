@@ -1,5 +1,5 @@
 [bootstrap]
-main_collection = /main/maxsdk_example.collectionc
+main_collection = /example/maxsdk_example.collectionc
 
 [input]
 game_binding = /input/game.input_bindingc
