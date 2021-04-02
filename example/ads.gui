@@ -1,4 +1,4 @@
-script: "/main/ads.gui_script"
+script: "/example/ads.gui_script"
 fonts {
   name: "larryfont"
   font: "/dirtylarry/larryfont.font"
