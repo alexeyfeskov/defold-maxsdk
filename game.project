@@ -14,3 +14,6 @@ title = Native Extension
 [library]
 include_dirs = myextension
 
+[native_extension]
+app_manifest = /generated.appmanifest
+
