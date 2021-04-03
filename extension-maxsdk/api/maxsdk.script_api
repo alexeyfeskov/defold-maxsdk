@@ -1,0 +1,292 @@
+- name: maxsdk
+  type: table
+  desc: Functions and constants for interacting with AppLovin Max SDK
+
+  members:
+
+#*****************************************************************************************************
+
+  - name: initialize
+    type: function
+
+#*****************************************************************************************************
+
+  - name: set_callback
+    type: function
+
+    parameters:
+    - name: callback
+      type: function
+
+      parameters:
+        - name: self
+          type: object
+
+        - name: message_id
+          type: number
+
+        - name: message
+          type: table
+
+#*****************************************************************************************************
+
+  - name: set_muted
+    type: function
+
+    parameters:
+    - name: bool
+      type: boolean
+
+#*****************************************************************************************************
+
+  - name: set_verbose_logging
+    type: function
+
+    parameters:
+    - name: bool
+      type: boolean
+
+#*****************************************************************************************************
+
+  - name: set_has_user_consent
+    type: function
+
+    parameters:
+    - name: bool
+      type: boolean
+
+#*****************************************************************************************************
+
+  - name: set_is_age_restricted_user
+    type: function
+
+    parameters:
+    - name: bool
+      type: boolean
+
+#*****************************************************************************************************
+
+  - name: set_do_not_sell
+    type: function
+
+    parameters:
+    - name: bool
+      type: boolean
+
+#*****************************************************************************************************
+
+  - name: set_fb_data_processing_options
+    type: function
+
+    parameters:
+    - name: mode
+      type: string
+
+    - name: country
+      type: number
+
+    - name: state
+      type: number
+
+#*****************************************************************************************************
+
+  - name: load_interstitial
+    type: function
+
+    parameters:
+    - name: ad_unit
+      type: string
+
+#*****************************************************************************************************
+
+  - name: show_interstitial
+    type: function
+
+    parameters:
+    - name: placement
+      type: string
+      optional: true
+
+#*****************************************************************************************************
+
+  - name: is_interstitial_loaded
+    type: function
+
+    returns:
+    - name: ready
+      type: boolean
+
+
+#*****************************************************************************************************
+
+  - name: load_rewarded
+    type: function
+
+    parameters:
+    - name: ad_unit
+      type: string
+
+#*****************************************************************************************************
+
+  - name: show_rewarded
+    type: function
+
+    parameters:
+    - name: placement
+      type: string
+      optional: true
+
+#*****************************************************************************************************
+
+  - name: is_rewarded_loaded
+    type: function
+
+    returns:
+    - name: ready
+      type: boolean
+
+
+#*****************************************************************************************************
+
+  - name: load_banner
+    type: function
+
+    parameters:
+    - name: ad_unit
+      type: string
+
+    - name: size_type
+      type: number
+
+#*****************************************************************************************************
+
+  - name: show_banner
+    type: function
+
+    parameters:
+    - name: position
+      type: number
+
+    - name: placement
+      type: string
+      optional: true
+
+
+#*****************************************************************************************************
+
+  - name: hide_banner
+    type: function
+
+#*****************************************************************************************************
+
+  - name: is_banner_loaded
+    type: function
+
+    returns:
+    - name: ready
+      type: boolean
+
+#*****************************************************************************************************
+
+  - name: is_banner_shown
+    type: function
+
+    returns:
+    - name: visible
+      type: boolean
+
+#*****************************************************************************************************
+
+  - name: destroy_banner
+    type: function
+
+#*****************************************************************************************************
+
+  - name: MSG_INITIALIZATION
+    type: number
+
+  - name: MSG_INTERSTITIAL
+    type: number
+
+  - name: MSG_REWARDED
+    type: number
+
+  - name: MSG_BANNER
+    type: number
+
+#*****************************************************************************************************
+
+  - name: EVENT_CLOSED
+    type: number
+
+  - name: EVENT_FAILED_TO_SHOW
+    type: number
+
+  - name: EVENT_OPENING
+    type: number
+
+  - name: EVENT_FAILED_TO_LOAD
+    type: number
+
+  - name: EVENT_LOADED
+    type: number
+
+  - name: EVENT_NOT_LOADED
+    type: number
+
+  - name: EVENT_EARNED_REWARD
+    type: number
+
+  - name: EVENT_COMPLETE
+    type: number
+
+  - name: EVENT_CLICKED
+    type: number
+
+  - name: EVENT_DESTROYED
+    type: number
+
+  - name: EVENT_EXPANDED
+    type: number
+
+  - name: EVENT_COLLAPSED
+    type: number
+
+#*****************************************************************************************************
+
+  - name: SIZE_BANNER
+    type: number
+
+  - name: SIZE_LEADER
+    type: number
+
+  - name: SIZE_MREC
+    type: number
+
+#*****************************************************************************************************
+
+  - name: POS_NONE
+    type: number
+
+  - name: POS_TOP_LEFT
+    type: number
+
+  - name: POS_TOP_CENTER
+    type: number
+
+  - name: POS_TOP_RIGHT
+    type: number
+
+  - name: POS_BOTTOM_LEFT
+    type: number
+
+  - name: POS_BOTTOM_CENTER
+    type: number
+
+  - name: POS_BOTTOM_RIGHT
+    type: number
+
+  - name: POS_CENTER
+    type: number
+
+#*****************************************************************************************************

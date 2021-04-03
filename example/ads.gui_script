@@ -1,6 +1,6 @@
 local dirtylarry = require "dirtylarry/dirtylarry"
 
-local MAX_LOG_LINES = 37
+local MAX_LOG_LINES = 36
 
 --log logic
 local gprint = print
