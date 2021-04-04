@@ -111,6 +111,13 @@ static int Lua_SetFbDataProcessingOptions(lua_State* L)
     return 0;
 }
 
+static int Lua_OpenMediationDebugger(lua_State* L)
+{
+    DM_LUA_STACK_CHECK(L, 0);
+    OpenMediationDebugger();
+    return 0;
+}
+
 static int Lua_LoadInterstitial(lua_State* L)
 {
     DM_LUA_STACK_CHECK(L, 0);
@@ -241,6 +248,7 @@ static const luaL_reg Module_methods[] =
     {"set_is_age_restricted_user", Lua_SetIsAgeRestrictedUser},
     {"set_do_not_sell", Lua_SetDoNotSell},
     {"set_fb_data_processing_options", Lua_SetFbDataProcessingOptions},
+    {"open_mediation_debugger", Lua_OpenMediationDebugger},
 
     {"load_interstitial", Lua_LoadInterstitial},
     {"show_interstitial", Lua_ShowInterstitial},
