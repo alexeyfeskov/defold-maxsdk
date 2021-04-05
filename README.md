@@ -41,7 +41,13 @@ if maxsdk then
     
     maxsdk.set_callback(maxsdk_callback)
     maxsdk.initialize()
+end
 
+-----------------------
+-- Start loading ads --
+-----------------------
+if maxsdk then
+    -- After SDK was initialized (`maxsdk.MSG_INITIALIZATION` event) - you can start loading ads
     maxsdk.load_interstitial(interstitial_ad_unit)
     maxsdk.load_rewarded(rewarded_ad_unit)
     maxsdk.load_banner(banner_ad_unit, maxsdk.SIZE_BANNER)
@@ -49,6 +55,10 @@ if maxsdk then
     -- maxsdk.SIZE_BANNER
     -- maxsdk.SIZE_LEADER
     -- maxsdk.SIZE_MREC (use separate ad_unit, all other APIs are same to banners)
+
+    -- To validate integration you can use Mediation Debugger
+    -- https://dash.applovin.com/documentation/mediation/android/testing-networks/mediation-debugger
+    maxsdk.open_mediation_debugger()
 end
 
 --------------
