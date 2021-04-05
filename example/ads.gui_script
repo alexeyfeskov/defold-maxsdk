@@ -196,7 +196,7 @@ function on_input(self, action_id, action)
     end
     
     local prev_type = self.ad_type
-
+    
     dirtylarry:button("initialization", action_id, action, function ()
         -- https://developers.facebook.com/docs/audience-network/guides/ccpa
         -- To explicitly not enable Limited Data Use (LDU) mode, use:
@@ -214,6 +214,10 @@ function on_input(self, action_id, action)
         maxsdk.set_muted(false)
         maxsdk.set_verbose_logging(true)
         maxsdk.initialize()
+    end)
+
+    dirtylarry:button("mediation_debugger", action_id, action, function ()
+        maxsdk.open_mediation_debugger()
     end)
     
     self.ad_type = dirtylarry:radio("ad_type_interstitial", action_id, action, maxsdk.MSG_INTERSTITIAL, self.ad_type)

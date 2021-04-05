@@ -29,6 +29,7 @@ struct AppLovin
     jmethodID      m_SetIsAgeRestrictedUser;
     jmethodID      m_SetDoNotSell;
     jmethodID      m_SetFbDataProcessingOptions;
+    jmethodID      m_OpenMediationDebugger;
 
     jmethodID      m_LoadInterstitial;
     jmethodID      m_ShowInterstitial;
@@ -169,6 +170,7 @@ static void InitJNIMethods(JNIEnv* env, jclass cls)
     g_maxsdk.m_SetIsAgeRestrictedUser = env->GetMethodID(cls, "setIsAgeRestrictedUser", "(Z)V");
     g_maxsdk.m_SetDoNotSell           = env->GetMethodID(cls, "setDoNotSell", "(Z)V");
     g_maxsdk.m_SetFbDataProcessingOptions = env->GetMethodID(cls, "setFbDataProcessingOptions", "(Ljava/lang/String;II)V");
+    g_maxsdk.m_OpenMediationDebugger  = env->GetMethodID(cls, "openMediationDebugger", "()V");
 
     g_maxsdk.m_LoadInterstitial       = env->GetMethodID(cls, "loadInterstitial", "(Ljava/lang/String;)V");
     g_maxsdk.m_ShowInterstitial       = env->GetMethodID(cls, "showInterstitial", "(Ljava/lang/String;)V");
@@ -243,6 +245,11 @@ void SetDoNotSell(bool doNotSell)
 void SetFbDataProcessingOptions(const char* cstr, int cint1, int cint2)
 {
     CallVoidMethodCharIntInt(g_maxsdk.m_AppLovinMaxJNI, g_maxsdk.m_SetFbDataProcessingOptions, cstr, cint1, cint2);
+}
+
+void OpenMediationDebugger()
+{
+    CallVoidMethod(g_maxsdk.m_AppLovinMaxJNI, g_maxsdk.m_OpenMediationDebugger);
 }
 
 void LoadInterstitial(const char* unitId)

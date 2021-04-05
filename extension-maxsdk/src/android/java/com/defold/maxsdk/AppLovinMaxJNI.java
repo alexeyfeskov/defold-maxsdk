@@ -125,6 +125,10 @@ public class AppLovinMaxJNI {
         }
     }
 
+    public void openMediationDebugger() {
+        AppLovinSdk.getInstance(mActivity).showMediationDebugger();
+    }
+
     // https://www.baeldung.com/java-json-escaping
     private String getJsonConversionErrorMessage(String messageText) {
         String message = null;

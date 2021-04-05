@@ -42,4 +42,4 @@
 *.gui_script linguist-language=Lua
 
 # Defold YAML Files
-*.script_api=YAML
+*.script_api=yml

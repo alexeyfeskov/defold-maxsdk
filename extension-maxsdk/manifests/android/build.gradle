@@ -7,7 +7,7 @@ repositories {
 
 dependencies {
   // https://dash.applovin.com/documentation/mediation/android/getting-started/integration
-  compile 'com.applovin:applovin-sdk:10.1.1'
+  compile 'com.applovin:applovin-sdk:10.1.2'
 
   compile 'com.applovin.mediation:adcolony-adapter:4.4.1.5'
   compile 'com.applovin.mediation:facebook-adapter:6.3.0.0'
@@ -17,7 +17,7 @@ dependencies {
   compile 'com.squareup.picasso:picasso:2.71828'
   compile 'com.android.support:customtabs:28.+'
   compile 'com.applovin.mediation:bytedance-adapter:3.4.1.1.2'
-  compile 'com.applovin.mediation:smaato-adapter:21.5.8.0'
+  compile 'com.applovin.mediation:smaato-adapter:21.5.8.1'
   compile 'com.applovin.mediation:tapjoy-adapter:12.7.1.2'
   compile 'com.applovin.mediation:verizonads-adapter:1.9.0.0'
   compile 'com.applovin.mediation:vungle-adapter:6.9.1.0'

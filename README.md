@@ -6,7 +6,7 @@ ATTENTION! Currently only Android SDK is supported! No iOs support in current im
 
 Supported ad types: [Interstitials](https://dash.applovin.com/documentation/mediation/android/getting-started/interstitials), [Rewarded Ads](https://dash.applovin.com/documentation/mediation/android/getting-started/rewarded-ads), [Banners](https://dash.applovin.com/documentation/mediation/android/getting-started/banners), [MRECs](https://dash.applovin.com/documentation/mediation/android/getting-started/mrecs)
 
-Used AppLovin Max SDK v10.1.1.
+Used AppLovin Max SDK v10.1.2.
 
 ## Installation
 
@@ -16,6 +16,17 @@ Open your game.project file and in the dependencies field under project add:
 >https://github.com/alexeyfeskov/defold-maxsdk/archive/master.zip
 
 or point to the ZIP file of a [specific release](https://github.com/alexeyfeskov/defold-maxsdk/releases).
+
+#### Android
+
+You must enable [AndroidX support](https://defold.com/manuals/android/#using-androidx) for your project.
+
+Also you must add [SDK key from Applovin Dashboard](https://dash.applovin.com/docs/integration#androidEventTracking) to `game.project` file by adding lines:
+
+```
+[applovin]
+sdk_key_android = YOUR_SDK_KEY_HERE
+```
 
 ## Example
 
@@ -41,7 +52,13 @@ if maxsdk then
     
     maxsdk.set_callback(maxsdk_callback)
     maxsdk.initialize()
+end
 
+-----------------------
+-- Start loading ads --
+-----------------------
+if maxsdk then
+    -- After SDK was initialized (`maxsdk.MSG_INITIALIZATION` event) - you can start loading ads
     maxsdk.load_interstitial(interstitial_ad_unit)
     maxsdk.load_rewarded(rewarded_ad_unit)
     maxsdk.load_banner(banner_ad_unit, maxsdk.SIZE_BANNER)
@@ -49,6 +66,10 @@ if maxsdk then
     -- maxsdk.SIZE_BANNER
     -- maxsdk.SIZE_LEADER
     -- maxsdk.SIZE_MREC (use separate ad_unit, all other APIs are same to banners)
+
+    -- To validate integration you can use Mediation Debugger
+    -- https://dash.applovin.com/documentation/mediation/android/testing-networks/mediation-debugger
+    maxsdk.open_mediation_debugger()
 end
 
 --------------
