@@ -17,6 +17,17 @@ Open your game.project file and in the dependencies field under project add:
 
 or point to the ZIP file of a [specific release](https://github.com/alexeyfeskov/defold-maxsdk/releases).
 
+#### Android
+
+You must enable [AndroidX support](https://defold.com/manuals/android/#using-androidx) for your project.
+
+Also you must add [SDK key from Applovin Dashboard](https://dash.applovin.com/docs/integration#androidEventTracking) to `game.project` file by adding lines:
+
+```
+[applovin]
+sdk_key_android = YOUR_SDK_KEY_HERE
+```
+
 ## Example
 
 See the [example folder](https://github.com/alexeyfeskov/defold-maxsdk/tree/master/example) for understand how to use extension. Especially [ads.gui_script](https://github.com/alexeyfeskov/defold-maxsdk/blob/master/example/ads.gui_script) file.
