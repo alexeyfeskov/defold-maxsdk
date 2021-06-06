@@ -1,6 +1,6 @@
 local dirtylarry = require "dirtylarry/dirtylarry"
 
-local MAX_LOG_LINES = 36
+local MAX_LOG_LINES = 35
 
 --log logic
 local gprint = print
@@ -91,6 +91,8 @@ local function maxsdk_callback(self, message_id, message)
             print("EVENT_LOADED: Interstitial AD loaded. Network: "..tostring(message.network))
         elseif message.event == maxsdk.EVENT_NOT_LOADED then
             print("EVENT_NOT_LOADED: can't call show_interstitial() before EVENT_LOADED\nError: "..message.error)
+        elseif message.event == maxsdk.EVENT_REVENUE_PAID then
+            print("EVENT_REVENUE_PAID: Interstitial AD revenue: "..tostring(message.revenue).."\nNetwork: "..tostring(message.network))
         end
 
     elseif message_id == maxsdk.MSG_REWARDED then
@@ -109,6 +111,8 @@ local function maxsdk_callback(self, message_id, message)
             print("EVENT_NOT_LOADED: can't call show_rewarded() before EVENT_LOADED\nError: "..message.error)
         elseif message.event == maxsdk.EVENT_EARNED_REWARD then
             print("EVENT_EARNED_REWARD: Reward: " .. tostring(message.amount) .. " " .. tostring(message.type))
+        elseif message.event == maxsdk.EVENT_REVENUE_PAID then
+            print("EVENT_REVENUE_PAID: Rewarded AD revenue: "..tostring(message.revenue).."\nNetwork: "..tostring(message.network))
         end
 
     elseif message_id == maxsdk.MSG_BANNER then
@@ -132,6 +136,8 @@ local function maxsdk_callback(self, message_id, message)
             print("EVENT_DESTROYED: Banner AD destroyed")
         elseif message.event == maxsdk.EVENT_NOT_LOADED then
             print("EVENT_NOT_LOADED: can't call show_banner() before EVENT_LOADED\nError: "..message.error)
+        elseif message.event == maxsdk.EVENT_REVENUE_PAID then
+            print("EVENT_REVENUE_PAID: Banner AD revenue: "..tostring(message.revenue).."\nNetwork: "..tostring(message.network))
         end
     end
 

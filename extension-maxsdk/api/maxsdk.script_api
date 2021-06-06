@@ -257,6 +257,9 @@
   - name: EVENT_COLLAPSED
     type: number
 
+  - name: EVENT_REVENUE_PAID
+    type: number
+
 #*****************************************************************************************************
 
   - name: SIZE_BANNER

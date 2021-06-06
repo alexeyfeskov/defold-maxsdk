@@ -30,6 +30,7 @@ enum MessageEvent
     EVENT_DESTROYED =               10,
     EVENT_EXPANDED =                11,
     EVENT_COLLAPSED =               12,
+    EVENT_REVENUE_PAID =            13,
 };
 
 struct CallbackData
