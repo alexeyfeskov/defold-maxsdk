@@ -12,6 +12,7 @@ import com.applovin.mediation.MaxAd;
 import com.applovin.mediation.MaxAdFormat;
 import com.applovin.mediation.MaxAdListener;
 import com.applovin.mediation.MaxAdViewAdListener;
+import com.applovin.mediation.MaxError;
 import com.applovin.mediation.MaxReward;
 import com.applovin.mediation.MaxRewardedAdListener;
 import com.applovin.mediation.ads.MaxAdView;
@@ -22,8 +23,6 @@ import com.applovin.sdk.AppLovinPrivacySettings;
 import com.applovin.sdk.AppLovinSdk;
 import com.applovin.sdk.AppLovinSdkConfiguration;
 import com.applovin.sdk.AppLovinSdkUtils;
-
-import com.facebook.ads.AdSettings;
 
 import org.json.JSONObject;
 import org.json.JSONException;
@@ -53,6 +52,7 @@ public class AppLovinMaxJNI {
     private static final int EVENT_DESTROYED =          10;
     private static final int EVENT_EXPANDED =           11;
     private static final int EVENT_COLLAPSED =          12;
+    private static final int EVENT_REVENUE_PAID =       13;
 
     // duplicate of enums from maxsdk_private.h:
     private static final int SIZE_BANNER =              0;
@@ -115,16 +115,6 @@ public class AppLovinMaxJNI {
         AppLovinPrivacySettings.setDoNotSell(doNotSell, mActivity);
     }
 
-    public void setFbDataProcessingOptions(String mode, int country, int state) {
-        if (mode != null) {
-            AdSettings.setDataProcessingOptions(new String[] {mode}, country, state);
-            Log.d(TAG, String.format("AdSettings.setDataProcessingOptions(new String[] {`%s`}, %d, %d)", mode, country, state));
-        } else {
-            AdSettings.setDataProcessingOptions(new String[] {});
-            Log.d(TAG, "AdSettings.setDataProcessingOptions(new String[] {})");
-        }
-    }
-
     public void openMediationDebugger() {
         AppLovinSdk.getInstance(mActivity).showMediationDebugger();
     }
@@ -181,6 +171,20 @@ public class AppLovinMaxJNI {
         maxsdkAddToQueue(msg, message);
     }
 
+    private void sendSimpleMessage(int msg, int eventId, String key_2, double value_2, String key_3, String value_3) {
+        String message = null;
+        try {
+            JSONObject obj = new JSONObject();
+            obj.put("event", eventId);
+            obj.put(key_2, value_2);
+            obj.put(key_3, value_3);
+            message = obj.toString();
+        } catch (JSONException e) {
+            message = getJsonConversionErrorMessage(e.getMessage());
+        }
+        maxsdkAddToQueue(msg, message);
+    }
+
 //--------------------------------------------------
 // Interstitial ADS
 
@@ -200,9 +204,10 @@ public class AppLovinMaxJNI {
                     }
 
                     @Override
-                    public void onAdLoadFailed(String adUnitId, int errorCode) {
+                    public void onAdLoadFailed(String adUnitId, final MaxError maxError) {
+                        int errorCode = maxError.getCode();
                         sendSimpleMessage(MSG_INTERSTITIAL, EVENT_FAILED_TO_LOAD,
-                                "code", errorCode, "error", getErrorMessage(adUnitId, errorCode));
+                                "code", errorCode, "error", getErrorMessage(adUnitId, maxError));
                     }
 
                     @Override
@@ -216,13 +221,14 @@ public class AppLovinMaxJNI {
                     }
 
                     @Override
-                    public void onAdDisplayFailed(MaxAd ad, int errorCode) {
+                    public void onAdDisplayFailed(MaxAd ad, final MaxError maxError) {
                         if (mInterstitialAd == adInstance) {
                             mInterstitialAd = null;
                         }
 
+                        int errorCode = maxError.getCode();
                         sendSimpleMessage(MSG_INTERSTITIAL, EVENT_FAILED_TO_SHOW,
-                                "code", errorCode, "error", getErrorMessage(ad, errorCode));
+                                "code", errorCode, "error", getErrorMessage(ad, maxError));
                     }
 
                     @Override
@@ -235,6 +241,12 @@ public class AppLovinMaxJNI {
                     public void onAdClicked(MaxAd ad) {
                         sendSimpleMessage(MSG_INTERSTITIAL, EVENT_CLICKED,
                                 "network", ad.getNetworkName());
+                    }
+
+                    @Override
+                    public void onAdRevenuePaid(MaxAd ad) {
+                        sendSimpleMessage(MSG_INTERSTITIAL, EVENT_REVENUE_PAID,
+                                "revenue", ad.getRevenue(), "network", ad.getNetworkName());
                     }
                 });
 
@@ -281,9 +293,10 @@ public class AppLovinMaxJNI {
                     }
 
                     @Override
-                    public void onAdLoadFailed(String adUnitId, int errorCode) {
+                    public void onAdLoadFailed(String adUnitId, final MaxError maxError) {
+                        int errorCode = maxError.getCode();
                         sendSimpleMessage(MSG_REWARDED, EVENT_FAILED_TO_LOAD,
-                                "code", errorCode, "error", getErrorMessage(adUnitId, errorCode));
+                                "code", errorCode, "error", getErrorMessage(adUnitId, maxError));
                     }
 
                     @Override
@@ -297,13 +310,14 @@ public class AppLovinMaxJNI {
                     }
 
                     @Override
-                    public void onAdDisplayFailed(MaxAd ad, int errorCode) {
+                    public void onAdDisplayFailed(MaxAd ad, final MaxError maxError) {
                         if (mRewardedAd == adInstance) {
                             mRewardedAd = null;
                         }
 
+                        int errorCode = maxError.getCode();
                         sendSimpleMessage(MSG_REWARDED, EVENT_FAILED_TO_SHOW,
-                                "code", errorCode, "error", getErrorMessage(ad, errorCode));
+                                "code", errorCode, "error", getErrorMessage(ad, maxError));
                     }
 
                     @Override
@@ -316,6 +330,12 @@ public class AppLovinMaxJNI {
                     public void onAdClicked(MaxAd ad) {
                         sendSimpleMessage(MSG_REWARDED, EVENT_CLICKED,
                                 "network", ad.getNetworkName());
+                    }
+
+                    @Override
+                    public void onAdRevenuePaid(MaxAd ad) {
+                        sendSimpleMessage(MSG_REWARDED, EVENT_REVENUE_PAID,
+                                "revenue", ad.getRevenue(), "network", ad.getNetworkName());
                     }
 
                     @Override
@@ -442,9 +462,10 @@ public class AppLovinMaxJNI {
                     }
 
                     @Override
-                    public void onAdLoadFailed(String adUnitId, int errorCode) {
+                    public void onAdLoadFailed(String adUnitId, final MaxError maxError) {
+                        int errorCode = maxError.getCode();
                         sendSimpleMessage(MSG_BANNER, EVENT_FAILED_TO_LOAD,
-                                "code", errorCode, "error", getErrorMessage(adUnitId, errorCode));
+                                "code", errorCode, "error", getErrorMessage(adUnitId, maxError));
                     }
 
                     @Override
@@ -464,9 +485,16 @@ public class AppLovinMaxJNI {
                     }
 
                     @Override
-                    public void onAdDisplayFailed(MaxAd ad, int errorCode) {
+                    public void onAdRevenuePaid(MaxAd ad) {
+                        sendSimpleMessage(MSG_BANNER, EVENT_REVENUE_PAID,
+                                "revenue", ad.getRevenue(), "network", ad.getNetworkName());
+                    }
+
+                    @Override
+                    public void onAdDisplayFailed(MaxAd ad, final MaxError maxError) {
+                        int errorCode = maxError.getCode();
                         sendSimpleMessage(MSG_BANNER, EVENT_FAILED_TO_SHOW,
-                                "code", errorCode, "error", getErrorMessage(ad, errorCode));
+                                "code", errorCode, "error", getErrorMessage(ad, maxError));
                     }
                 });
 
@@ -651,35 +679,12 @@ public class AppLovinMaxJNI {
         return adParams;
     }
 
-    private String getErrorMessage(final int errorCode) {
-        switch (errorCode) {
-            case -1:
-                return "Unspecified error with one of the mediated network SDKs.";
-            case 204:
-                return "NO_FILL no ads are currently eligible for your device.";
-            case -102:
-                return "Ad request timed out (usually due to poor connectivity).";
-            case -103:
-                return "Device is not connected to the internet (e.g. airplane mode).";
-            case -2051:
-                return "Device is not connected to a VPN or the VPN connection is not working properly (Users in China Only).";
-            case -5001:
-                return "Ad failed to load due to various reasons (such as no networks being able to fill).";
-            case -5201:
-                return "Internal state error with the AppLovin MAX SDK.";
-            case -5601:
-                return "Provided Activity instance has been garbage collected while the AppLovin MAX SDK attempts to re-load an expired ad.";
-            default:
-                return "Unknown error";
-        }
+    private String getErrorMessage(final String adUnitId, final MaxError maxError) {
+        return String.format("%s\nAdUnitId:%s", maxError.getMessage(), adUnitId);
     }
 
-    private String getErrorMessage(final String adUnitId, final int errorCode) {
-        return String.format("%s\nAdUnitId:%s", getErrorMessage(errorCode), adUnitId);
-    }
-
-    private String getErrorMessage(final MaxAd ad, final int errorCode) {
+    private String getErrorMessage(final MaxAd ad, MaxError maxError) {
         return String.format("%s\nFormat:%s AdUnitId:%s Network:%s",
-                getErrorMessage(errorCode), ad.getFormat(), ad.getAdUnitId(), ad.getNetworkName());
+                maxError.getMessage(), ad.getFormat(), ad.getAdUnitId(), ad.getNetworkName());
     }
 }

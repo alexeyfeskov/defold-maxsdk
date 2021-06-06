@@ -1,19 +1,19 @@
 repositories {
   google()
   mavenCentral()
-  maven { url "https://adcolony.bintray.com/AdColony" }
+  maven { url "https://sdk.tapjoy.com" }
 }
 
 dependencies {
   // https://dash.applovin.com/documentation/mediation/android/getting-started/integration
-  compile 'com.applovin:applovin-sdk:10.1.2'
+  implementation 'com.applovin:applovin-sdk:10.3.0'
 
-  compile 'com.applovin.mediation:adcolony-adapter:4.4.1.5'
-  compile 'com.applovin.mediation:facebook-adapter:6.3.0.0'
-  compile 'com.android.support:recyclerview-v7:28.+'
-  compile 'com.android.support:appcompat-v7:28.+'
-  compile 'com.applovin.mediation:inmobi-adapter:9.9.9.1'
-  compile 'com.squareup.picasso:picasso:2.71828'
-  compile 'com.android.support:customtabs:28.+'
-  compile 'com.applovin.mediation:tapjoy-adapter:12.7.1.2'
+  implementation 'com.applovin.mediation:adcolony-adapter:4.5.0.0'
+  implementation 'com.applovin.mediation:facebook-adapter:6.5.0.0'
+  implementation 'com.android.support:recyclerview-v7:28.+'
+  implementation 'com.android.support:appcompat-v7:28.+'
+  implementation 'com.applovin.mediation:inmobi-adapter:9.9.9.3'
+  implementation 'com.squareup.picasso:picasso:2.71828'
+  implementation 'com.android.support:customtabs:28.+'
+  implementation 'com.applovin.mediation:tapjoy-adapter:12.8.1.0'
 }

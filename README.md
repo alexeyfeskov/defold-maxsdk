@@ -128,6 +128,8 @@ function maxsdk_callback(self, message_id, message)
             print("EVENT_LOADED: Interstitial AD loaded. Network:", message.network)
         elseif message.event == maxsdk.EVENT_NOT_LOADED then
             print("EVENT_NOT_LOADED: can't call show_interstitial() before EVENT_LOADED", message.code, message.error)
+        elseif message.event == maxsdk.EVENT_REVENUE_PAID then
+            print("EVENT_REVENUE_PAID: Interstitial AD revenue: ", message.revenue, message.network)
         end
 
     elseif message_id == maxsdk.MSG_REWARDED then
@@ -145,6 +147,8 @@ function maxsdk_callback(self, message_id, message)
             print("EVENT_NOT_LOADED: can't call show_rewarded() before EVENT_LOADED", message.code, message.error)
         elseif message.event == maxsdk.EVENT_EARNED_REWARD then
             print("EVENT_EARNED_REWARD: Reward: ", message.amount, message.type)
+        elseif message.event == maxsdk.EVENT_REVENUE_PAID then
+            print("EVENT_REVENUE_PAID: Rewarded AD revenue: ", message.revenue, message.network)
         end
 
     elseif message_id == maxsdk.MSG_BANNER then
@@ -168,6 +172,8 @@ function maxsdk_callback(self, message_id, message)
             print("EVENT_DESTROYED: Banner AD destroyed")
         elseif message.event == maxsdk.EVENT_NOT_LOADED then
             print("EVENT_NOT_LOADED: can't call show_banner() before EVENT_LOADED", message.code, message.error)
+        elseif message.event == maxsdk.EVENT_REVENUE_PAID then
+            print("EVENT_REVENUE_PAID: Banner AD revenue: ", message.revenue, message.network)
         end
     end
 end

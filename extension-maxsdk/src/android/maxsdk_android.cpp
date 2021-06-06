@@ -28,7 +28,6 @@ struct AppLovin
     jmethodID      m_SetHasUserConsent;
     jmethodID      m_SetIsAgeRestrictedUser;
     jmethodID      m_SetDoNotSell;
-    jmethodID      m_SetFbDataProcessingOptions;
     jmethodID      m_OpenMediationDebugger;
 
     jmethodID      m_LoadInterstitial;
@@ -103,35 +102,6 @@ static void CallVoidMethodCharInt(jobject instance, jmethodID method, const char
     env->DeleteLocalRef(jstr);
 }
 
-static void CallVoidMethodCharIntInt(jobject instance, jmethodID method, const char* cstr, int cint1, int cint2)
-{
-    ThreadAttacher attacher;
-    JNIEnv *env = attacher.env;
-
-    jstring jstr = env->NewStringUTF(cstr);
-    env->CallVoidMethod(instance, method, jstr, cint1, cint2);
-    env->DeleteLocalRef(jstr);
-}
-
-static void _CallVoidMethodCharIntInt(jobject instance, jmethodID method, const char* cstr, int cint1, int cint2)
-{
-    ThreadAttacher attacher;
-    JNIEnv *env = attacher.env;
-
-    jstring jstr = NULL;
-    if (cstr)
-    {
-        jstr = env->NewStringUTF(cstr);
-    }
-
-    env->CallVoidMethod(instance, method, jstr, cint1, cint2);
-    
-    if (cstr)
-    {
-        env->DeleteLocalRef(jstr);
-    }
-}
-
 static void CallVoidMethodIntChar(jobject instance, jmethodID method, int cint, const char* cstr)
 {
     ThreadAttacher attacher;
@@ -169,7 +139,6 @@ static void InitJNIMethods(JNIEnv* env, jclass cls)
     g_maxsdk.m_SetHasUserConsent      = env->GetMethodID(cls, "setHasUserConsent", "(Z)V");
     g_maxsdk.m_SetIsAgeRestrictedUser = env->GetMethodID(cls, "setIsAgeRestrictedUser", "(Z)V");
     g_maxsdk.m_SetDoNotSell           = env->GetMethodID(cls, "setDoNotSell", "(Z)V");
-    g_maxsdk.m_SetFbDataProcessingOptions = env->GetMethodID(cls, "setFbDataProcessingOptions", "(Ljava/lang/String;II)V");
     g_maxsdk.m_OpenMediationDebugger  = env->GetMethodID(cls, "openMediationDebugger", "()V");
 
     g_maxsdk.m_LoadInterstitial       = env->GetMethodID(cls, "loadInterstitial", "(Ljava/lang/String;)V");
@@ -242,11 +211,6 @@ void SetDoNotSell(bool doNotSell)
     CallVoidMethodBool(g_maxsdk.m_AppLovinMaxJNI, g_maxsdk.m_SetDoNotSell, doNotSell);
 }
 
-void SetFbDataProcessingOptions(const char* cstr, int cint1, int cint2)
-{
-    CallVoidMethodCharIntInt(g_maxsdk.m_AppLovinMaxJNI, g_maxsdk.m_SetFbDataProcessingOptions, cstr, cint1, cint2);
-}
-
 void OpenMediationDebugger()
 {
     CallVoidMethod(g_maxsdk.m_AppLovinMaxJNI, g_maxsdk.m_OpenMediationDebugger);
@@ -310,6 +274,49 @@ bool IsBannerLoaded()
 bool IsBannerShown()
 {
     return CallBoolMethod(g_maxsdk.m_AppLovinMaxJNI, g_maxsdk.m_IsBannerShown);
+}
+
+void SetFbDataProcessingOptions(const char* cstr, int cint1, int cint2)
+{
+    ThreadAttacher attacher;
+    JNIEnv *env = attacher.env;
+    ClassLoader class_loader = ClassLoader(env);
+    jclass fbAdSettingsClass = class_loader.load("com.facebook.ads.AdSettings");
+    
+    if (env->ExceptionCheck())
+    {
+        dmLogError("SetFbDataProcessingOptions: class `com.facebook.ads.AdSettings` not found");
+        env->ExceptionClear();
+    }
+    else
+    {
+        jclass stringClass = class_loader.load("java.lang.String");
+        if (cstr) 
+        {
+            jmethodID setDataMethod = env->GetStaticMethodID(fbAdSettingsClass, "setDataProcessingOptions", "([Ljava/lang/String;II)V");
+            jstring jstr = env->NewStringUTF(cstr);
+            jobjectArray jarr = env->NewObjectArray(1, stringClass, jstr);
+            env->CallStaticVoidMethod(fbAdSettingsClass, setDataMethod, jarr, cint1, cint2);
+            env->DeleteLocalRef(jstr);
+            env->DeleteLocalRef(jarr);
+            dmLogInfo("SetFbDataProcessingOptions AdSettings.setDataProcessingOptions( new String[] {`%s`}, %d, %d )", cstr, cint1, cint2);
+        }
+        else
+        {
+            jmethodID setEmptyMethod = env->GetStaticMethodID(fbAdSettingsClass, "setDataProcessingOptions", "([Ljava/lang/String;)V");
+            jobjectArray jarrEmpty = env->NewObjectArray(0, stringClass, NULL);
+            env->CallStaticVoidMethod(fbAdSettingsClass, setEmptyMethod, jarrEmpty);
+            env->DeleteLocalRef(jarrEmpty);
+            dmLogInfo("SetFbDataProcessingOptions AdSettings.setDataProcessingOptions( new String[] {} )");
+        }
+
+        if (env->ExceptionCheck())
+        {
+            dmLogError("SetFbDataProcessingOptions: An unexpected error occurred during JNI interaction.");
+            env->ExceptionDescribe();
+            env->ExceptionClear();
+        }
+    }
 }
 
 }//namespace dmAppLovinMax
