@@ -2,11 +2,11 @@
 
 This is a native extension for [Defold engine](http://www.defold.com) with partial implementation of [AppLovin Max SDK](https://www.applovin.com/max/)
 
-ATTENTION! Currently only Android SDK is supported! No iOs support in current implementation! Even for Android only AdColony, AppLovin, Pangle, Facebook, InMobi, Tapjoy mediation adapters are supported.
+ATTENTION! Currently only Android SDK is supported! No iOs support in current implementation! Even for Android only AdColony, AppLovin, Facebook, InMobi, Tapjoy mediation adapters are supported.
 
 Supported ad types: [Interstitials](https://dash.applovin.com/documentation/mediation/android/getting-started/interstitials), [Rewarded Ads](https://dash.applovin.com/documentation/mediation/android/getting-started/rewarded-ads), [Banners](https://dash.applovin.com/documentation/mediation/android/getting-started/banners), [MRECs](https://dash.applovin.com/documentation/mediation/android/getting-started/mrecs)
 
-Used AppLovin Max SDK v10.1.2.
+Used AppLovin Max SDK v10.3.1.
 
 *Disclaimer: This extension is independent and unofficial, and not associated with AppLovin in any way.*
 
