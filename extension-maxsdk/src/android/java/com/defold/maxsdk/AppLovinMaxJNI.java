@@ -11,6 +11,7 @@ import android.widget.RelativeLayout;
 import com.applovin.mediation.MaxAd;
 import com.applovin.mediation.MaxAdFormat;
 import com.applovin.mediation.MaxAdListener;
+import com.applovin.mediation.MaxAdRevenueListener;
 import com.applovin.mediation.MaxAdViewAdListener;
 import com.applovin.mediation.MaxError;
 import com.applovin.mediation.MaxReward;
@@ -242,7 +243,9 @@ public class AppLovinMaxJNI {
                         sendSimpleMessage(MSG_INTERSTITIAL, EVENT_CLICKED,
                                 "network", ad.getNetworkName());
                     }
+                });
 
+                adInstance.setRevenueListener(new MaxAdRevenueListener() {
                     @Override
                     public void onAdRevenuePaid(MaxAd ad) {
                         sendSimpleMessage(MSG_INTERSTITIAL, EVENT_REVENUE_PAID,
@@ -333,12 +336,6 @@ public class AppLovinMaxJNI {
                     }
 
                     @Override
-                    public void onAdRevenuePaid(MaxAd ad) {
-                        sendSimpleMessage(MSG_REWARDED, EVENT_REVENUE_PAID,
-                                "revenue", ad.getRevenue(), "network", ad.getNetworkName());
-                    }
-
-                    @Override
                     public void onRewardedVideoStarted(MaxAd ad) {
                         // Log.d(TAG, "onRewardedVideoStarted");
                     }
@@ -354,6 +351,14 @@ public class AppLovinMaxJNI {
                         String rewardType = reward.getLabel();
                         sendSimpleMessage(MSG_REWARDED, EVENT_EARNED_REWARD,
                                 "amount", rewardAmount, "type", rewardType);
+                    }
+                });
+
+                adInstance.setRevenueListener(new MaxAdRevenueListener() {
+                    @Override
+                    public void onAdRevenuePaid(MaxAd ad) {
+                        sendSimpleMessage(MSG_REWARDED, EVENT_REVENUE_PAID,
+                                "revenue", ad.getRevenue(), "network", ad.getNetworkName());
                     }
                 });
 
@@ -485,16 +490,18 @@ public class AppLovinMaxJNI {
                     }
 
                     @Override
-                    public void onAdRevenuePaid(MaxAd ad) {
-                        sendSimpleMessage(MSG_BANNER, EVENT_REVENUE_PAID,
-                                "revenue", ad.getRevenue(), "network", ad.getNetworkName());
-                    }
-
-                    @Override
                     public void onAdDisplayFailed(MaxAd ad, final MaxError maxError) {
                         int errorCode = maxError.getCode();
                         sendSimpleMessage(MSG_BANNER, EVENT_FAILED_TO_SHOW,
                                 "code", errorCode, "error", getErrorMessage(ad, maxError));
+                    }
+                });
+
+                view.setRevenueListener(new MaxAdRevenueListener() {
+                    @Override
+                    public void onAdRevenuePaid(MaxAd ad) {
+                        sendSimpleMessage(MSG_BANNER, EVENT_REVENUE_PAID,
+                                "revenue", ad.getRevenue(), "network", ad.getNetworkName());
                     }
                 });
 
@@ -680,7 +687,7 @@ public class AppLovinMaxJNI {
     }
 
     private String getErrorMessage(final String adUnitId, final MaxError maxError) {
-        return String.format("%s\nAdUnitId:%s", maxError.getMessage(), adUnitId);
+        return String.format("%s\n%s\nAdUnitId:%s", maxError.getMessage(), maxError.getAdLoadFailureInfo(), adUnitId);
     }
 
     private String getErrorMessage(final MaxAd ad, MaxError maxError) {
