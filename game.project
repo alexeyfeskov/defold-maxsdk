@@ -14,7 +14,7 @@ dynamic_orientation = 1
 
 [project]
 title = AppLovinMax
-dependencies = https://github.com/andsve/dirtylarry/archive/master.zip,https://github.com/defold/extension-adinfo/archive/refs/tags/3.0.0.zip
+dependencies#0 = https://github.com/andsve/dirtylarry/archive/master.zip
 
 [library]
 include_dirs = extension-maxsdk
