@@ -144,17 +144,6 @@ local function maxsdk_callback(self, message_id, message)
     update_ui(self)
 end
 
-local function window_callback(self, event, data)
-    if event == window.WINDOW_EVENT_RESIZED then
-        print("Window resized: ", data.width, data.height)
-        if maxsdk and maxsdk.is_banner_shown() then
-            local banner_pos_name = self.banner_positions[self.show_pos]
-            print("Force relayout banner to " .. banner_pos_name)
-            maxsdk.show_banner(maxsdk[banner_pos_name])
-        end
-    end
-end
-
 function init(self)
     msg.post(".", "acquire_input_focus")
 
@@ -184,7 +173,6 @@ function init(self)
 
     if maxsdk then
         maxsdk.set_callback(maxsdk_callback)
-        window.set_listener(window_callback)
     end
 
     if adinfo then

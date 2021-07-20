@@ -88,12 +88,12 @@ public class AppLovinMaxJNI {
 
     public void onActivateApp()
     {
-        pauseBanner();
+        resumeBanner();
     }
 
     public void onDeactivateApp()
     {
-        resumeBanner();
+        pauseBanner();
     }
 
     public void setMuted(boolean muted) {
@@ -413,6 +413,9 @@ public class AppLovinMaxJNI {
 
 
     private BannerState mBannerState = BannerState.NONE;
+    private int mBannerSize = SIZE_BANNER;
+    private String mBannerUnit = null;
+    private String mBannerPlacement = null;
     private RelativeLayout mBannerLayout;
     private MaxAd mLoadedBanner;
     private MaxAdView mBannerAdView;
@@ -454,10 +457,12 @@ public class AppLovinMaxJNI {
 
                                 // ad format can be changed while auto-refreshing banner
                                 // needs to re-create layout each time
-                                recreateBannerLayout(view, ad.getFormat());
+                                mBannerUnit = unitId;
+                                mBannerSize = bannerSize;
                                 mLoadedBanner = ad;
+                                mBannerAdView.setPlacement(mBannerPlacement);
                                 if (mBannerState == BannerState.SHOWN) {
-                                    mBannerLayout.setVisibility(View.VISIBLE);
+                                    showBannerUiThread();
                                 }
 
                                 sendSimpleMessage(MSG_BANNER, EVENT_LOADED,
@@ -525,12 +530,10 @@ public class AppLovinMaxJNI {
             @Override
             public void run() {
                 if (isBannerLoaded()) {
+                    mBannerPlacement = placement;
                     mBannerGravity = getGravity(pos);
                     mBannerAdView.setPlacement(placement);
-                    if (mBannerState != BannerState.PAUSED) // to prevent auto-refresh while app in background (will show onAppActivated)
-                    {
-                        showBannerUiThread();
-                    }
+                    showBannerUiThread();
                 }
                 else
                 {
@@ -585,21 +588,24 @@ public class AppLovinMaxJNI {
     }
 
     private void pauseBanner() {
-        if (isBannerShown()) {
-            mBannerAdView.stopAutoRefresh();
-            mBannerState = BannerState.PAUSED;
-        }
-    }
-
-    private void resumeBanner() {
         mActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (mBannerState == BannerState.PAUSED) {
-                    showBannerUiThread();
+                if (isBannerShown()) {
+                    Log.d(TAG, "pauseBanner");
+                    destroyBannerUiThread();
+                    mBannerState = BannerState.PAUSED;
                 }
             }
         });
+    }
+
+    private void resumeBanner() {
+        if (mBannerState == BannerState.PAUSED) {
+            Log.d(TAG, "resumeBanner");
+            mBannerState = BannerState.SHOWN;
+            loadBanner(mBannerUnit, mBannerSize);
+        }
     }
 
     private int getGravity(final int bannerPosConst) {
