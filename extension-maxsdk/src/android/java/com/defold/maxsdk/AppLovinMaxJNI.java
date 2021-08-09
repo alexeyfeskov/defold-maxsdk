@@ -415,7 +415,6 @@ public class AppLovinMaxJNI {
     private BannerState mBannerState = BannerState.NONE;
     private int mBannerSize = SIZE_BANNER;
     private String mBannerUnit = null;
-    private String mBannerPlacement = null;
     private RelativeLayout mBannerLayout;
     private MaxAd mLoadedBanner;
     private MaxAdView mBannerAdView;
@@ -455,15 +454,9 @@ public class AppLovinMaxJNI {
                                     return;
                                 }
 
-                                // ad format can be changed while auto-refreshing banner
-                                // needs to re-create layout each time
                                 mBannerUnit = unitId;
                                 mBannerSize = bannerSize;
                                 mLoadedBanner = ad;
-                                mBannerAdView.setPlacement(mBannerPlacement);
-                                if (mBannerState == BannerState.SHOWN) {
-                                    showBannerUiThread();
-                                }
 
                                 sendSimpleMessage(MSG_BANNER, EVENT_LOADED,
                                         "network", ad.getNetworkName());
@@ -530,7 +523,6 @@ public class AppLovinMaxJNI {
             @Override
             public void run() {
                 if (isBannerLoaded()) {
-                    mBannerPlacement = placement;
                     mBannerGravity = getGravity(pos);
                     mBannerAdView.setPlacement(placement);
                     showBannerUiThread();
@@ -583,6 +575,7 @@ public class AppLovinMaxJNI {
     private void showBannerUiThread() {
         recreateBannerLayout(mBannerAdView, mLoadedBanner.getFormat());
         mBannerLayout.setVisibility(View.VISIBLE);
+        mBannerAdView.setBackgroundColor(Color.TRANSPARENT);
         mBannerAdView.startAutoRefresh();
         mBannerState = BannerState.SHOWN;
     }
