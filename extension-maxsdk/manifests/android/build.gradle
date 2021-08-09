@@ -6,13 +6,13 @@ repositories {
 
 dependencies {
   // https://dash.applovin.com/documentation/mediation/android/getting-started/integration
-  implementation 'com.applovin:applovin-sdk:10.3.1'
+  implementation 'com.applovin:applovin-sdk:10.3.2'
 
-  implementation 'com.applovin.mediation:adcolony-adapter:4.5.0.0'
+  implementation 'com.applovin.mediation:adcolony-adapter:4.6.0.0'
   implementation 'com.applovin.mediation:facebook-adapter:6.5.1.0'
   implementation 'com.android.support:recyclerview-v7:28.+'
   implementation 'com.android.support:appcompat-v7:28.+'
-  implementation 'com.applovin.mediation:inmobi-adapter:9.9.9.4'
+  implementation 'com.applovin.mediation:inmobi-adapter:9.9.9.5'
   implementation 'com.squareup.picasso:picasso:2.71828'
   implementation 'com.android.support:customtabs:28.+'
   implementation 'com.applovin.mediation:tapjoy-adapter:12.8.1.0'
