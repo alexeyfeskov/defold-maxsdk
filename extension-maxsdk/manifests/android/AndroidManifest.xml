@@ -8,6 +8,10 @@
             android:name="applovin.sdk.key"
             android:value="{{applovin.sdk_key_android}}"/>
 
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="{{applovin.admob_appid_android}}"/>
+
     </application>
     
 </manifest>

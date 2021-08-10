@@ -21,9 +21,7 @@ include_dirs = extension-maxsdk
 
 [applovin]
 sdk_key_android = OquH2hNFtGlwEoR03PJa3xdoXRnuHt5Lstpk0yMREvigNeVdmmR6BQdwx_6x8LazqQ_tHMa9RN4cNVkrg2b8Lm
-
-[native_extension]
-app_manifest = /generated.appmanifest
+admob_appid_android = ca-app-pub-3940256099942544~3347511713
 
 [android]
 package = com.defold.applovinexample
