@@ -175,12 +175,6 @@ function init(self)
         maxsdk.set_callback(maxsdk_callback)
     end
 
-    if adinfo then
-        adinfo.get(function(self, info)
-            print("GAID or IDFA: ", info.ad_ident, "Tracking: ", info.ad_tracking_enabled)
-        end)
-    end
-
     update_ui(self)
 end
 

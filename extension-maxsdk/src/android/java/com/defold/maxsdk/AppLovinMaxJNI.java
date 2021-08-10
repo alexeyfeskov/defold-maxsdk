@@ -415,6 +415,7 @@ public class AppLovinMaxJNI {
     private BannerState mBannerState = BannerState.NONE;
     private int mBannerSize = SIZE_BANNER;
     private String mBannerUnit = null;
+    private String mBannerPlacement = null;
     private RelativeLayout mBannerLayout;
     private MaxAd mLoadedBanner;
     private MaxAdView mBannerAdView;
@@ -457,6 +458,12 @@ public class AppLovinMaxJNI {
                                 mBannerUnit = unitId;
                                 mBannerSize = bannerSize;
                                 mLoadedBanner = ad;
+
+                                // if banner was reloaded after destroying on focus lost - force show it
+                                if (mBannerState == BannerState.PAUSED) {
+                                    mBannerAdView.setPlacement(mBannerPlacement);
+                                    showBannerUiThread();
+                                }
 
                                 sendSimpleMessage(MSG_BANNER, EVENT_LOADED,
                                         "network", ad.getNetworkName());
@@ -523,6 +530,7 @@ public class AppLovinMaxJNI {
             @Override
             public void run() {
                 if (isBannerLoaded()) {
+                    mBannerPlacement = placement;
                     mBannerGravity = getGravity(pos);
                     mBannerAdView.setPlacement(placement);
                     showBannerUiThread();
@@ -596,7 +604,6 @@ public class AppLovinMaxJNI {
     private void resumeBanner() {
         if (mBannerState == BannerState.PAUSED) {
             Log.d(TAG, "resumeBanner");
-            mBannerState = BannerState.SHOWN;
             loadBanner(mBannerUnit, mBannerSize);
         }
     }
