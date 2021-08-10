@@ -16,5 +16,7 @@ dependencies {
   implementation 'com.applovin.mediation:inmobi-adapter:9.9.9.5'
   implementation 'com.squareup.picasso:picasso:2.71828'
   implementation 'com.android.support:customtabs:28.+'
+  implementation 'com.applovin.mediation:mytarget-adapter:5.13.1.0'
   implementation 'com.applovin.mediation:tapjoy-adapter:12.8.1.0'
+  implementation 'com.applovin.mediation:vungle-adapter:6.9.1.0'
 }
