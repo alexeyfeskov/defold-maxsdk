@@ -6,7 +6,7 @@ ATTENTION! Currently only Android SDK is supported! No iOs support in current im
 
 Supported ad types: [Interstitials](https://dash.applovin.com/documentation/mediation/android/getting-started/interstitials), [Rewarded Ads](https://dash.applovin.com/documentation/mediation/android/getting-started/rewarded-ads), [Banners](https://dash.applovin.com/documentation/mediation/android/getting-started/banners), [MRECs](https://dash.applovin.com/documentation/mediation/android/getting-started/mrecs)
 
-Used AppLovin Max SDK v10.3.2.
+Used AppLovin Max SDK v10.3.3.
 
 *Disclaimer: This extension is independent and unofficial, and not associated with AppLovin in any way.*
 

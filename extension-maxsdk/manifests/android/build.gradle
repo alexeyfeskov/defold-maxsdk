@@ -6,7 +6,7 @@ repositories {
 
 dependencies {
   // https://dash.applovin.com/documentation/mediation/android/getting-started/integration
-  implementation 'com.applovin:applovin-sdk:10.3.2'
+  implementation 'com.applovin:applovin-sdk:10.3.3'
 
   implementation 'com.applovin.mediation:adcolony-adapter:4.6.3.2'
   implementation 'com.applovin.mediation:facebook-adapter:6.6.0.3'
