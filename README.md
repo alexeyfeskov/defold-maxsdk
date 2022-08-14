@@ -2,11 +2,11 @@
 
 This is a native extension for [Defold engine](http://www.defold.com) with partial implementation of [AppLovin Max SDK](https://www.applovin.com/max/)
 
-ATTENTION! Currently only Android SDK is supported! No iOs support in current implementation! Even for Android only AdColony, AppLovin, Facebook, Google AdMob, InMobi, myTarget, Tapjoy, Vungle mediation adapters are supported.
+ATTENTION! Currently only Android SDK is supported! No iOs support in current implementation! Even for Android only AdColony, AppLovin, Google AdMob, InMobi, ironSource, Meta Audience Network, myTarget, Tapjoy, Unity Ads, Vungle, Yandex mediation adapters are supported.
 
 Supported ad types: [Interstitials](https://dash.applovin.com/documentation/mediation/android/getting-started/interstitials), [Rewarded Ads](https://dash.applovin.com/documentation/mediation/android/getting-started/rewarded-ads), [Banners](https://dash.applovin.com/documentation/mediation/android/getting-started/banners), [MRECs](https://dash.applovin.com/documentation/mediation/android/getting-started/mrecs)
 
-Used AppLovin Max SDK v10.3.3.
+Used AppLovin Max SDK v11.4.4.
 
 *Disclaimer: This extension is independent and unofficial, and not associated with AppLovin in any way.*
 
@@ -21,7 +21,7 @@ or point to the ZIP file of a [specific release](https://github.com/alexeyfeskov
 
 #### Android
 
-Since some mediation adapters requires D8 support use Defold 1.2.185 or later
+Since some mediation adapters requires minSdk 19 (Android 4.4) needs to set `minimum_sdk_version = 19` (or above) in `game.project` file.
 
 Add [SDK key from Applovin Dashboard](https://dash.applovin.com/docs/integration#androidEventTracking) and [Google AdMob app ID](https://support.google.com/admob/answer/7356431) to `game.project` file by adding lines:
 

@@ -25,6 +25,7 @@ admob_appid_android = ca-app-pub-3940256099942544~3347511713
 
 [android]
 package = com.defold.applovinexample
+minimum_sdk_version = 19
 
 [render]
 clear_color_red = 0.1

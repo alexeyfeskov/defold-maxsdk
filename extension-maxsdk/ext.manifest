@@ -4,4 +4,4 @@ name: "AppLovinMaxExt"
 platforms:
     android:
         context:
-            aaptExtraPackages: ['com.applovin.sdk', 'androidx.work', 'com.google.android.gms.common']
+            aaptExtraPackages: ['com.applovin.sdk', 'androidx.startup', 'androidx.work', 'com.google.android.gms.common']
